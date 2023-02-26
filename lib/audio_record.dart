@@ -1,11 +1,21 @@
 import 'dart:async';
+
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:see_our_sounds/src/config/app_constants.dart';
 import 'package:see_our_sounds/src/core/core.dart';
+import 'package:see_our_sounds/src/data/models/audio_tagging_model.dart';
+import 'package:see_our_sounds/src/data/repositories/audio_tagging_repo_impl.dart';
+import 'package:see_our_sounds/src/data/services/remote/audio_tagging_service.dart';
+import 'package:see_our_sounds/src/domain/repositories/audio_tagging_repo.dart';
+import 'package:see_our_sounds/src/screen/provider/audio_tagging_provider.dart';
 import 'package:sound_stream/sound_stream.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class AudioStream extends StatefulWidget {
   const AudioStream({Key? key}) : super(key: key);
@@ -15,14 +25,16 @@ class AudioStream extends StatefulWidget {
 }
 
 class _AudioStreamState extends State<AudioStream> {
-  LocalNotification _localNotification = LocalNotification();
+  LocalNotification localNotification = LocalNotification();
+  late SpeechToText speechToText;
   RecorderStream recorder = RecorderStream();
   List<Uint8List> audioChunks = [];
   bool isRecording = false;
-  DateTime currentTime = DateTime(0);
-  Uint8List? audioFile;
+  bool isSTTEnable = false;
   StreamSubscription? recorderStatus;
   StreamSubscription? audioStream;
+  double confidence = 1.0;
+  String text = '';
 
   Future<void> openRecord() async {
     recorderStatus = recorder.status.listen((status) async {
@@ -30,31 +42,24 @@ class _AudioStreamState extends State<AudioStream> {
       if (mounted && permissionStatus.isGranted) {
         setState(() {
           isRecording = status == SoundStreamStatus.Playing;
-          print('레코딩 $isRecording');
         });
       }
     });
 
     audioStream = recorder.audioStream.listen((data) {
-      print('오디오 전전 ${audioChunks.length}');
       audioChunks.add(data);
-      // 1초에 20개의 data 들어옴
-      if (audioChunks.length > 260) {
+      if (audioChunks.length > 60) {
         audioChunks.removeAt(0);
-        print('오디오 삭제');
-        print('오디오 후후 ${audioChunks.length}');
       }
     });
 
-    await Future.wait([
-      recorder.initialize(),
-    ]);
+    await Future.wait([recorder.initialize()]);
   }
 
-  Uint8List writeWavFile(List<Uint8List> audioChunks) {
+  Uint8List toWAV(List<Uint8List> audioChunks) {
     var data = audioChunks.expand((i) => i).toList();
     var channels = 1;
-    int sampleRate = 32000;
+    int sampleRate = 16000;
     int byteRate = (16 * sampleRate * channels) ~/ 8;
     int totalAudioLen = data.length;
     int totalDataLen = totalAudioLen + 36;
@@ -89,65 +94,92 @@ class _AudioStreamState extends State<AudioStream> {
     ]);
 
     return header;
-
   }
 
-  Future pingPong() async {
-    var request =
-    http.Request('GET', Uri.parse('http://watch.jimmy0006.site:3000/ping'));
+  Future getPong() async {
+    var request = http.Request('GET', Uri.parse(uriBase + uriPing));
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
     } else {
-      print(response.reasonPhrase);
+      throw Exception(response.reasonPhrase);
     }
   }
 
-  Future audioRecognition() async {
+  Stream<AudioTaggingModel> audioTagging() async* {
     final audioStreamController = StreamController<DateTime>();
     Timer? timer;
     StreamSubscription<DateTime>? audioStreamSubscription;
 
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       audioStreamController.add(DateTime.now());
     });
 
     audioStreamSubscription =
         audioStreamController.stream.listen((event) async {
-          if (!isRecording) {
-            timer?.cancel();
-            await audioStreamController.close();
-            await audioStreamSubscription?.cancel();
-          } else {
-            var data = await writeWavFile(audioChunks);
-            var responseBody = await sendAudio(data);
-          }
-        });
+      if (!isRecording) {
+        timer?.cancel();
+        await audioStreamController.close();
+        await audioStreamSubscription?.cancel();
+      } else {
+        Uint8List wav = toWAV(audioChunks);
+        AudioTaggingModel audioTaggingModel = await postAudio(wav);
+      }
+    });
   }
 
-
-
-  Future<Map<String, dynamic>?> sendAudio(Uint8List data) async {
-    final uri = Uri.parse('http://watch.jimmy0006.site:3000/uint');
-    var response = await http.post(uri, body: data);
-    if (response.statusCode == 200) {
-      var responseBody = jsonDecode(response.body);
-      print(responseBody);
-      return responseBody;
-    } else {
-      print(response.reasonPhrase);
+  Stream<AudioTaggingModel> audioTaggingStream() async* {
+    await for (final value in recorder.audioStream) {
+      print('확인 : $value');
+      Uint8List wav = toWAV(audioChunks);
+      AudioTaggingModel audioTaggingModel = await postAudio(wav);
+      yield audioTaggingModel;
     }
   }
 
+  Future<AudioTaggingModel> postAudio(Uint8List data) async {
+    final uri = Uri.parse(uriBase + uriUint);
+    var response = await http.post(uri, body: data);
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      return AudioTaggingModel.fromJson(responseBody);
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  void _listen() async {
+    if (!isRecording) {
+      bool available = await speechToText.initialize(
+        onStatus: (val) => print('onStatus: $val'),
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        speechToText.listen(
+          onResult: (val) => setState(() {
+            text = val.recognizedWords;
+            print(text);
+            if (val.hasConfidenceRating && val.confidence > 0) {
+              confidence = val.confidence;
+            }
+          }),
+        );
+      }
+    } else {
+      speechToText.stop();
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     openRecord();
-    _localNotification.initNotification();
+    audioTaggingStream();
+    speechToText = SpeechToText();
+    localNotification.initNotification();
   }
 
   @override
@@ -163,23 +195,69 @@ class _AudioStreamState extends State<AudioStream> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          IconButton(
-            iconSize: 90,
-            icon: Icon(isRecording ? Icons.mic : Icons.mic_off),
-            onPressed: () async {
-              if (isRecording) {
-                recorder.stop();
-                audioChunks.clear();
-              } else {
-                recorder.start();
-                pingPong();
-                audioRecognition();
-              }
-            },
-          )
-        ],
+      body: StreamBuilder(
+          stream: audioTaggingStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(speechToText.isListening
+                        ? text
+                        : isSTTEnable
+                            ? 'Click button'
+                            : 'Speech not available'),
+                    Text(
+                      snapshot.data!.isAlert.toString(),
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    Text(
+                      snapshot.data!.label,
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    Text(
+                      snapshot.data!.taggingRate.toString(),
+                      style: TextStyle(fontSize: 30),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'No Data',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ],
+              ),
+            );
+          }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
+      floatingActionButton: AvatarGlow(
+        animate: isRecording,
+        glowColor: Theme.of(context).primaryColor,
+        endRadius: 80,
+        duration: const Duration(milliseconds: 4000),
+        repeatPauseDuration: const Duration(milliseconds: 200),
+        repeat: true,
+        child: FloatingActionButton(
+          child: Icon(isRecording ? Icons.mic : Icons.mic_off),
+          onPressed: () async {
+            _listen();
+            if (isRecording) {
+              recorder.stop();
+              audioChunks.clear();
+            } else {
+              recorder.start();
+              getPong();
+            }
+            _listen();
+          },
+        ),
       ),
     );
   }

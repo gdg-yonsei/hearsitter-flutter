@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:see_our_sounds/audio_record.dart';
+import 'package:see_our_sounds/src/screen/home/home_screen.dart';
+import 'package:see_our_sounds/test.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
