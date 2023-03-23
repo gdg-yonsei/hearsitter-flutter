@@ -1,19 +1,17 @@
 import 'dart:async';
-
-import 'package:avatar_glow/avatar_glow.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:see_our_sounds/src/config/app_constants.dart';
+import 'package:see_our_sounds/src/core/app_constants.dart';
 import 'package:see_our_sounds/src/core/core.dart';
-import 'package:see_our_sounds/src/data/models/audio_tagging_model.dart';
-import 'package:see_our_sounds/src/data/repositories/audio_tagging_repo_impl.dart';
-import 'package:see_our_sounds/src/data/services/remote/audio_tagging_service.dart';
-import 'package:see_our_sounds/src/domain/repositories/audio_tagging_repo.dart';
-import 'package:see_our_sounds/src/screen/provider/audio_tagging_provider.dart';
+import 'package:see_our_sounds/src/core/notification/local_notification.dart';
+import 'package:see_our_sounds/src/core/utils/audio_util.dart';
+import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
+import 'package:see_our_sounds/src/screens/home/audio_waveform.dart';
+import 'package:see_our_sounds/src/screens/home/decibel_history_chart.dart';
 import 'package:sound_stream/sound_stream.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -28,13 +26,17 @@ class _AudioStreamState extends State<AudioStream> {
   LocalNotification localNotification = LocalNotification();
   late SpeechToText speechToText;
   RecorderStream recorder = RecorderStream();
+  late NoiseMeter noiseMeter;
   List<Uint8List> audioChunks = [];
+  List<double> decibelHistory = [];
   bool isRecording = false;
   bool isSTTEnable = false;
+  StreamSubscription<NoiseReading>? noiseSubscription;
   StreamSubscription? recorderStatus;
   StreamSubscription? audioStream;
   double confidence = 1.0;
   String text = '';
+  double currentDecibel = 0;
 
   Future<void> openRecord() async {
     recorderStatus = recorder.status.listen((status) async {
@@ -56,48 +58,14 @@ class _AudioStreamState extends State<AudioStream> {
     await Future.wait([recorder.initialize()]);
   }
 
-  Uint8List toWAV(List<Uint8List> audioChunks) {
-    var data = audioChunks.expand((i) => i).toList();
-    var channels = 1;
-    int sampleRate = 16000;
-    int byteRate = (16 * sampleRate * channels) ~/ 8;
-    int totalAudioLen = data.length;
-    int totalDataLen = totalAudioLen + 36;
-
-    Uint8List header = Uint8List.fromList([
-      ...utf8.encode('RIFF'),
-      (totalDataLen & 0xff),
-      ((totalDataLen >> 8) & 0xff),
-      ((totalDataLen >> 16) & 0xff),
-      ((totalDataLen >> 24) & 0xff),
-      ...utf8.encode('WAVEfmt '),
-      // 4 bytes: size of 'fmt ' chunk
-      16, 0, 0, 0,
-      // type of fmt
-      1, 0, channels, 0,
-      (sampleRate & 0xff),
-      ((sampleRate >> 8) & 0xff),
-      ((sampleRate >> 16) & 0xff),
-      ((sampleRate >> 24) & 0xff),
-      (byteRate & 0xff),
-      ((byteRate >> 8) & 0xff),
-      ((byteRate >> 16) & 0xff),
-      ((byteRate >> 24) & 0xff),
-      ((16 * channels) ~/ 8), // block align
-      0, 16, 0, // bit size
-      ...utf8.encode('data'),
-      (totalAudioLen & 0xff),
-      ((totalAudioLen >> 8) & 0xff),
-      ((totalAudioLen >> 16) & 0xff),
-      ((totalAudioLen >> 24) & 0xff),
-      ...data
-    ]);
-
-    return header;
+  void onError(Object error) {
+    isRecording = false;
+    throw Exception(error.toString());
   }
 
   Future getPong() async {
-    var request = http.Request('GET', Uri.parse(uriBase + uriPing));
+    var request =
+        http.Request('GET', Uri.parse(AppUri.uriBase + AppUri.uriPing));
 
     http.StreamedResponse response = await request.send();
 
@@ -108,39 +76,16 @@ class _AudioStreamState extends State<AudioStream> {
     }
   }
 
-  Stream<AudioTaggingModel> audioTagging() async* {
-    final audioStreamController = StreamController<DateTime>();
-    Timer? timer;
-    StreamSubscription<DateTime>? audioStreamSubscription;
-
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      audioStreamController.add(DateTime.now());
-    });
-
-    audioStreamSubscription =
-        audioStreamController.stream.listen((event) async {
-      if (!isRecording) {
-        timer?.cancel();
-        await audioStreamController.close();
-        await audioStreamSubscription?.cancel();
-      } else {
-        Uint8List wav = toWAV(audioChunks);
-        AudioTaggingModel audioTaggingModel = await postAudio(wav);
-      }
-    });
-  }
-
   Stream<AudioTaggingModel> audioTaggingStream() async* {
-    await for (final value in recorder.audioStream) {
-      print('확인 : $value');
-      Uint8List wav = toWAV(audioChunks);
+    await for (final _ in recorder.audioStream) {
+      Uint8List wav = AudioUtil.toWAV(audioChunks);
       AudioTaggingModel audioTaggingModel = await postAudio(wav);
       yield audioTaggingModel;
     }
   }
 
   Future<AudioTaggingModel> postAudio(Uint8List data) async {
-    final uri = Uri.parse(uriBase + uriUint);
+    final uri = Uri.parse(AppUri.uriBase + AppUri.uriUint);
     var response = await http.post(uri, body: data);
     if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
@@ -172,6 +117,27 @@ class _AudioStreamState extends State<AudioStream> {
     }
   }
 
+  void onData(NoiseReading noiseReading) {
+    setState(() {
+      if (isRecording) {
+        var decibel = noiseReading.meanDecibel;
+        currentDecibel = decibel;
+        if (decibel < 30) {
+          decibelHistory.add(30);
+        } else if (decibel > 110) {
+          decibelHistory.add(110);
+        } else {
+          decibelHistory.add(decibel);
+        }
+        if (decibelHistory.length > 80) {
+          decibelHistory.removeAt(0);
+        }
+      } else {
+        currentDecibel = 0;
+      }
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -180,6 +146,8 @@ class _AudioStreamState extends State<AudioStream> {
     audioTaggingStream();
     speechToText = SpeechToText();
     localNotification.initNotification();
+    noiseMeter = NoiseMeter(onError);
+    noiseSubscription = noiseMeter.noiseStream.listen(onData);
   }
 
   @override
@@ -190,74 +158,93 @@ class _AudioStreamState extends State<AudioStream> {
     audioStream?.cancel();
     recorder.stop();
     audioChunks.clear();
+    noiseSubscription?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-          stream: audioTaggingStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(speechToText.isListening
-                        ? text
-                        : isSTTEnable
-                            ? 'Click button'
-                            : 'Speech not available'),
-                    Text(
-                      snapshot.data!.isAlert.toString(),
-                      style: TextStyle(fontSize: 30),
+      body: Column(
+        children: [
+          // SfRadialGauge(
+          //   axes: <RadialAxis>[
+          //     RadialAxis(
+          //       minimum: 0,
+          //       maximum: 100,
+          //       ranges: <GaugeRange>[
+          //         GaugeRange(startValue: 0, endValue: 50, color: Colors.green),
+          //         GaugeRange(
+          //             startValue: 50, endValue: 100, color: Colors.orange),
+          //         GaugeRange(startValue: 100, endValue: 150, color: Colors.red)
+          //       ],
+          //       pointers: [
+          //         NeedlePointer(
+          //           value: 90, tailStyle: TailStyle(width: 0, length: 0), needleLength: 1,
+          //         )
+          //       ],
+          //       annotations: [
+          //         GaugeAnnotation(
+          //           widget: Container(
+          //             child: Text('90'),
+          //           ),
+          //           angle: 90,
+          //           positionFactor: .5,
+          //         )
+          //       ],
+          //     )
+          //   ],
+          // ),
+          Text(currentDecibel.round().toString()),
+          // DecibelHistoryChart(decibelHistory: decibelHistory),
+          // AudioWaveform(decibelHistory: decibelHistory),
+          StreamBuilder(
+              stream: audioTaggingStream(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          snapshot.data!.isAlert.toString(),
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        Text(
+                          snapshot.data!.label,
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        Text(
+                          snapshot.data!.taggingRate.toString(),
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        Text(
+                          snapshot.data!.date,
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ],
                     ),
-                    Text(
-                      snapshot.data!.label,
-                      style: TextStyle(fontSize: 30),
-                    ),
-                    Text(
-                      snapshot.data!.taggingRate.toString(),
-                      style: TextStyle(fontSize: 30),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'No Data',
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ],
-              ),
-            );
-          }),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
-      floatingActionButton: AvatarGlow(
-        animate: isRecording,
-        glowColor: Theme.of(context).primaryColor,
-        endRadius: 80,
-        duration: const Duration(milliseconds: 4000),
-        repeatPauseDuration: const Duration(milliseconds: 200),
-        repeat: true,
-        child: FloatingActionButton(
-          child: Icon(isRecording ? Icons.mic : Icons.mic_off),
-          onPressed: () async {
-            _listen();
-            if (isRecording) {
-              recorder.stop();
-              audioChunks.clear();
-            } else {
-              recorder.start();
-              getPong();
-            }
-            _listen();
-          },
-        ),
+                  );
+                }
+                return Center(
+                  child: const SizedBox(),
+                );
+              }),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(isRecording ? Icons.mic : Icons.mic_off),
+        onPressed: () async {
+          _listen();
+          if (isRecording) {
+            recorder.stop();
+            audioChunks.clear();
+          } else {
+            recorder.start();
+            getPong();
+          }
+          _listen();
+        },
       ),
     );
   }
