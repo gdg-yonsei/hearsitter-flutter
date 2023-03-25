@@ -16,7 +16,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.5
   permission_handler: ^10.2.0
-  record: ^4.4.4
   sound_stream: ^0.3.0
   flutter_local_notifications: ^13.0.0
   freezed_annotation: ^2.2.0
@@ -29,11 +28,11 @@ dependencies:
   noise_meter: ^3.1.0
   fl_chart: ^0.61.0
   intl: ^0.18.0
-  audio_wave: ^0.1.5
-  gauge_indicator: ^0.3.3
   syncfusion_flutter_gauges: ^20.4.54
   sqflite: ^2.2.6
   path: ^1.8.2
+
+
 
 dev_dependencies:
   flutter_test:

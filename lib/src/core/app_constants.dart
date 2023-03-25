@@ -2,6 +2,7 @@ import 'dart:ui';
 
 class AppUri {
   AppUri._();
+
   static const String uriBase = 'http://watch.jimmy0006.site:3000';
   static const String uriPing = '/ping';
   static const String uriUint = '/uint';
@@ -9,16 +10,19 @@ class AppUri {
 
 class AppColor {
   AppColor._();
+
   static const primaryColor = Color(0xff4285f4);
-  static const errorColor = Color(0xffea4335);
+  static const secondaryColor = Color(0xffa7bbff);
+  static const errorColor = Color(0xffE54C19);
   static const grayColor = Color(0xffa1a1a1);
   static const lightGrayColor = Color(0xffd9d9d9);
   static const accentColor = Color(0xff00164e);
+  static const darkColor = Color(0xff181818);
 }
 
-class AppDatabase{
+class AppDatabase {
   static const String tableName = 'history';
-  static const  int version = 1; // database version
+  static const int version = 1; // database version
 }
 
 enum SoundCategory {

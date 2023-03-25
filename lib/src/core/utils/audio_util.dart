@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-class AudioUtil{
-
+class AudioUtil {
   static Uint8List toWAV(List<Uint8List> audioChunks) {
     var data = audioChunks.expand((i) => i).toList();
     var channels = 1;
@@ -43,15 +42,4 @@ class AudioUtil{
 
     return header;
   }
-
-  static double calculateDecibel(Uint8List audioChunks){
-    final sum = audioChunks.fold(0, (acc, audioChunk) => acc + audioChunk * audioChunk);
-
-    // Root Mean Square (RMS)
-    final rms = sqrt(sum / audioChunks.length);
-    final db = 20 * _log10(rms);
-    return db;
-  }
-
-  static double _log10(double x) => log(x) / log(10);
 }

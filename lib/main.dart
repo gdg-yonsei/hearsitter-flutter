@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:see_our_sounds/audio_record.dart';
-import 'package:see_our_sounds/src/screens/history_screen.dart';
-
+import 'package:see_our_sounds/src/screens/home/home_screen.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -16,11 +14,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HearSitter',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'NotoSansKR'
-      ),
-      home: const HistoryScreen(),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'NotoSansKR'),
+      home: HomseScreen(),
     );
   }
 }

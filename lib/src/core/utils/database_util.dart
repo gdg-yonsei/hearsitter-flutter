@@ -71,8 +71,8 @@ class DatabaseUtil {
     await db.rawDelete("DELETE FROM $tableName WHERE id = ?", [id]);
   }
 
-// 앱이 종료되면, DB 자동으로 닫히지만,
-// 원할 때 종료하고 싶은 경우  사용됨.
+  // 앱이 종료되면, DB 자동으로 닫히지만,
+  // 원할 때 종료하고 싶은 경우  사용됨.
   Future close() async {
     final db = await database;
 

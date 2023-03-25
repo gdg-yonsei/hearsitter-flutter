@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:see_our_sounds/src/core/app_constants.dart';
 import 'package:see_our_sounds/src/core/utils/database_util.dart';
 import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
 
@@ -39,7 +37,7 @@ class AudioTaggingRepositoryImpl extends ChangeNotifier
       audioTagging = audioTagging.copyWith(
           date: DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
           decibel: currentDecibel);
-      _history!.add(audioTagging);
+      _history.add(audioTagging);
       notifyListeners();
     });
   }
@@ -47,7 +45,7 @@ class AudioTaggingRepositoryImpl extends ChangeNotifier
   @override
   Future<void> deleteHistory(int id) async {
     return _databaseUtil.deleteHistory(id).whenComplete(() {
-      _history!.removeAt(id);
+      _history.removeAt(id);
       notifyListeners();
     });
   }

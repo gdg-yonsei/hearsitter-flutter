@@ -4,14 +4,10 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:record/record.dart';
 import 'package:see_our_sounds/src/core/core.dart';
 import 'package:see_our_sounds/src/core/app_constants.dart';
 import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
 import 'package:sound_stream/sound_stream.dart';
-
-final audioTaggingServiceProvider =
-    Provider((ref) => AudioTaggingServiceImpl());
 
 abstract class AudioTaggingService {
   Future<void> getPong();
@@ -20,8 +16,6 @@ abstract class AudioTaggingService {
 }
 
 class AudioTaggingServiceImpl extends AudioTaggingService {
-  RecorderStream recorderStream = RecorderStream();
-
   @override
   Future<void> getPong() async {
     var request =
