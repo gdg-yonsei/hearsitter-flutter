@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:see_our_sounds/src/screens/category/category_card.dart';
-import 'package:see_our_sounds/src/screens/category/category_screen.dart';
+import 'package:see_our_sounds/src/core/utils/sharedprefs_util.dart';
 import 'package:see_our_sounds/src/screens/home/home_screen.dart';
-import 'package:see_our_sounds/src/screens/onboarding_screen.dart';
 
-void main() {
+import 'package:see_our_sounds/src/screens/onboarding/onboarding_screen.dart';
+
+late bool isOnboard;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesUtil.initialize();
+  final prefs = SharedPreferencesUtil().prefs;
+  isOnboard = prefs.getBool('isOnboard') ?? false;
   runApp(ProviderScope(child: const MyApp()));
 }
 
@@ -21,7 +27,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           fontFamily: 'NotoSansKR',
           scaffoldBackgroundColor: Colors.white),
-      home: OnboardingScreen(),
+      home: isOnboard ? const HomseScreen() : const OnboardingScreen(),
     );
   }
 }

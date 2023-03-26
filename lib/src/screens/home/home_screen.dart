@@ -6,7 +6,7 @@ import 'package:see_our_sounds/src/providers/audio_tagging_api_provider.dart';
 import 'package:see_our_sounds/src/providers/audio_tagging_db_provider.dart';
 import 'package:see_our_sounds/src/providers/decibel_provider.dart';
 import 'package:see_our_sounds/src/providers/stt_provider.dart';
-import 'package:see_our_sounds/src/screens/home/decibel_history_chart.dart';
+import 'package:see_our_sounds/src/screens/home/widgets/decibel_history_chart.dart';
 import 'package:see_our_sounds/src/screens/home/widgets/toggle_button.dart';
 
 import 'package:syncfusion_flutter_gauges/gauges.dart';

@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:see_our_sounds/src/core/utils/sharedprefs_util.dart';
 import 'package:see_our_sounds/src/core/app_constants.dart';
+import 'package:see_our_sounds/src/screens/category/widgets/bottom_nav_button.dart';
 
-class OnboardingScreen extends StatefulWidget {
+final validateNameProvider = StateProvider<bool>((ref) => false);
+
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   TextEditingController textEditingController = TextEditingController();
+  final _prefs = SharedPreferencesUtil().prefs;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool validateName = ref.watch(validateNameProvider);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -38,6 +56,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 10,
               ),
               TextField(
+                onChanged: (val) {
+                  ref.read(validateNameProvider.notifier).state =
+                      textEditingController.text.trim().isEmpty ? false : true;
+                },
                 style: const TextStyle(
                     fontSize: 20,
                     decoration: TextDecoration.none,
@@ -55,28 +77,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        width: double.infinity,
-        height: 55,
-        margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-        decoration: BoxDecoration(
-            color: AppColor.primaryColor,
-            borderRadius: const BorderRadius.all(Radius.circular(15)),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey.shade100, blurRadius: 2, spreadRadius: 1)
-            ]),
-        child: const Center(
-          child: Text(
-            'Next',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
+      bottomNavigationBar: bottomNavButton(
+          onTap: () {
+            _prefs.setString('userName', textEditingController.text);
+            _prefs.setBool('isOnboard', true);
+          },
+          validate: validateName,
+          text: 'Next'),
     );
   }
 }

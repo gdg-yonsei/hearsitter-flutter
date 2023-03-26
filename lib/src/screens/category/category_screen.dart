@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:see_our_sounds/src/core/app_constants.dart';
-import 'package:see_our_sounds/src/screens/category/category_card.dart';
+import 'package:see_our_sounds/src/screens/category/widgets/category_card.dart';
+import 'package:see_our_sounds/src/screens/category/widgets/bottom_nav_button.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -103,28 +104,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        width: double.infinity,
-        height: 55,
-        margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-        decoration: BoxDecoration(
-            color: AppColor.primaryColor,
-            borderRadius: const BorderRadius.all(Radius.circular(15)),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey.shade100, blurRadius: 2, spreadRadius: 1)
-            ]),
-        child: const Center(
-          child: Text(
-            'Done',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
+      bottomNavigationBar:
+          bottomNavButton(onTap: () {}, validate: false, text: 'Done'),
     );
   }
 }
