@@ -1,22 +1,14 @@
-import 'dart:async';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:see_our_sounds/src/core/app_constants.dart';
-import 'package:see_our_sounds/src/core/utils/audio_util.dart';
 import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
 import 'package:see_our_sounds/src/providers/audio_tagging_api_provider.dart';
 import 'package:see_our_sounds/src/providers/audio_tagging_db_provider.dart';
 import 'package:see_our_sounds/src/providers/decibel_provider.dart';
 import 'package:see_our_sounds/src/providers/stt_provider.dart';
-import 'package:see_our_sounds/src/screens/history_screen.dart';
 import 'package:see_our_sounds/src/screens/home/decibel_history_chart.dart';
 import 'package:see_our_sounds/src/screens/home/widgets/toggle_button.dart';
-import 'package:see_our_sounds/src/services/audio_tagging_service.dart';
-import 'package:sound_stream/sound_stream.dart';
+
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 final isRecordingProvider = StateProvider<bool>((ref) => false);
@@ -31,7 +23,6 @@ class HomseScreen extends ConsumerStatefulWidget {
 class _HomseScreenState extends ConsumerState<HomseScreen> {
   @override
   Widget build(BuildContext context) {
-    List<Uint8List> audioChunks = [];
     bool isRecording = ref.watch(isRecordingProvider);
     final stt = ref.watch(sttProvider);
     final audioTaggingApi =
@@ -92,26 +83,8 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                 return const SizedBox.shrink();
               },
             ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Recent History',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.start,
-                ),
-                TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'See All',
-                      style: TextStyle(
-                          color: AppColor.primaryColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400),
-                    ))
-              ],
-            ),
+            const Spacer(),
+            historyTitle(),
             Container(
               width: double.infinity,
               height: 80,
@@ -119,12 +92,12 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
                   boxShadow: [
                     BoxShadow(
                         color: Colors.grey.shade100,
                         blurRadius: 2,
-                        spreadRadius: 5)
+                        spreadRadius: 1)
                   ]),
               child: history.isEmpty
                   ? Row(
@@ -176,7 +149,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                         decibelGauge(0),
                       ],
                     )),
-            Spacer(),
+            const Spacer(),
             bottomNavigationBar(isRecording)
           ],
         ),
@@ -184,18 +157,40 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
     ));
   }
 
+  Row historyTitle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Recent History',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          textAlign: TextAlign.start,
+        ),
+        TextButton(
+            onPressed: () {},
+            child: const Text(
+              'See All',
+              style: TextStyle(
+                  color: AppColor.primaryColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400),
+            ))
+      ],
+    );
+  }
+
   Widget bottomNavigationBar(bool isRecording) {
     return Container(
       width: double.infinity,
-      height: 65,
+      height: 60,
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
           boxShadow: [
             BoxShadow(
-                color: Colors.grey.shade100, blurRadius: 2, spreadRadius: 5)
+                color: Colors.grey.shade100, blurRadius: 2, spreadRadius: 1)
           ]),
       child: Row(
         children: [

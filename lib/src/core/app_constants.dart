@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:see_our_sounds/src/core/app_assets.dart';
+
 class AppUri {
   AppUri._();
 
@@ -26,33 +28,96 @@ class AppDatabase {
 }
 
 enum SoundCategory {
-  INFANT_CRYING,
-  CRACK_SOUND,
-  FIRE_ALARM,
-  GUN_SHOT,
-  CAR_HORN,
-  ANNOUNCEMNET,
-  NAME,
-  MAMAM_PAPA,
-  BICYCLE_BELL,
+  BABY_CRYING, // 아기 울음 소리
+  CRACK_SOUND, // 유리 깨지는 소리
+  FIRE_ALARM, // 화재 알람
+  GUN_SHOT, // 총소리
+  CAR_HORN, // 자동차 경적 소리
+  NAME, // 이름
+  MAMA, // 엄마
+  PAPA, // 아빠
 }
 
-enum PuzzleType { MATH_PUZZLE, MEMORY_PUZZLE, BRAIN_PUZZLE }
+String soundCategoryIconLight(SoundCategory soundCategory) {
+  switch (soundCategory) {
+    case SoundCategory.BABY_CRYING:
+      return AppAssets.infantCryingIconLight;
+    case SoundCategory.CRACK_SOUND:
+      return AppAssets.crackIconLight;
+    case SoundCategory.FIRE_ALARM:
+      return AppAssets.fireAlarmIconLight;
+    case SoundCategory.GUN_SHOT:
+      return AppAssets.gunIconLight;
+    case SoundCategory.CAR_HORN:
+      return AppAssets.carHornIconLight;
+    case SoundCategory.NAME:
+      return AppAssets.nameIconLight;
+    case SoundCategory.MAMA:
+      return AppAssets.mamaPapaIconLight;
+    case SoundCategory.PAPA:
+      return AppAssets.mamaPapaIconLight;
+  }
+}
 
-class KeyUtil {
-  static const IS_DARK_MODE = "isDarkMode";
+String soundCategoryIconDark(SoundCategory soundCategory) {
+  switch (soundCategory) {
+    case SoundCategory.BABY_CRYING:
+      return AppAssets.infantCryingIconDark;
+    case SoundCategory.CRACK_SOUND:
+      return AppAssets.crackIconDark;
+    case SoundCategory.FIRE_ALARM:
+      return AppAssets.fireAlarmIconDark;
+    case SoundCategory.GUN_SHOT:
+      return AppAssets.gunIconDark;
+    case SoundCategory.CAR_HORN:
+      return AppAssets.carHornIconDark;
+    case SoundCategory.NAME:
+      return AppAssets.nameIconDark;
+    case SoundCategory.MAMA:
+      return AppAssets.mamaPapaIconDark;
+    case SoundCategory.PAPA:
+      return AppAssets.mamaPapaIconDark;
+  }
+}
 
-  static const String splash = 'Splash';
-  static const String dashboard = 'Dashboard';
-  static const String home = 'Home';
+String soundCategoryToLabel(SoundCategory soundCategory) {
+  switch (soundCategory) {
+    case SoundCategory.BABY_CRYING:
+      return 'Baby Crying';
+    case SoundCategory.CRACK_SOUND:
+      return 'Glass';
+    case SoundCategory.FIRE_ALARM:
+      return 'Fire alarm';
+    case SoundCategory.GUN_SHOT:
+      return 'Gunshot';
+    case SoundCategory.CAR_HORN:
+      return 'Car horn';
+    case SoundCategory.NAME:
+      return 'Name';
+    case SoundCategory.MAMA:
+      return 'Mama';
+    case SoundCategory.PAPA:
+      return 'Papa';
+  }
+}
 
-  static const String calculator = 'Calculator';
-  static const String guessSign = 'GuessSign';
-  static const String correctAnswer = 'CorrectAnswer';
-  static const String quickCalculation = 'QuickCalculation';
-  static const String mentalArithmetic = 'MentalArithmetic';
-  static const String squareRoot = 'SquareRoot';
-  static const String mathPairs = 'MathPairs';
-  static const String magicTriangle = 'MagicTriangle';
-  static const String picturePuzzle = 'PicturePuzzle';
+Color soundCategoryColor(SoundCategory soundCategory) {
+  switch (soundCategory) {
+    case SoundCategory.BABY_CRYING:
+      return const Color(0xffffd400);
+    case SoundCategory.CRACK_SOUND:
+      return const Color(0xff0072db);
+    case SoundCategory.FIRE_ALARM:
+      return const Color(0xffe94025);
+    case SoundCategory.GUN_SHOT:
+      return Color(0xff473b3d);
+    case SoundCategory.CAR_HORN:
+      return Color(0xff7c1bbb);
+    case SoundCategory.NAME:
+      return Color(0xffffa7cb);
+    case SoundCategory.MAMA:
+      return Color(0xffff6e11);
+    case SoundCategory.PAPA:
+      return Color(0xff008d62);
+  }
 }
