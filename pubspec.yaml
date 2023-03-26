@@ -1,4 +1,4 @@
-name: see_our_sounds
+name: hear_sitter
 description: A new Flutter project.
 
 publish_to: 'none'
@@ -32,8 +32,17 @@ dependencies:
   sqflite: ^2.2.6
   path: ^1.8.2
   shared_preferences: ^2.0.20
+  go_router: ^6.5.0
+  flutter_launcher_icons: ^0.12.0
 
+flutter_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/logo/logo1.png"
 
+  android_12:
+    icon_background_color: "#ffffff"
+    image: assets/logo/logo3.png
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +58,7 @@ flutter:
     - assets/
     - assets/icon_dark/
     - assets/icon_light/
+    - assets/logo/
 
   fonts:
     - family: NotoSansKR

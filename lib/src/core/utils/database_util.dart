@@ -1,7 +1,8 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart'; // db에 접근하기 위해
-import 'package:see_our_sounds/src/core/app_constants.dart';
-import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
+import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/models/audio_tagging_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseUtil {
@@ -70,6 +71,7 @@ class DatabaseUtil {
     final db = await database;
     await db.rawDelete("DELETE FROM $tableName WHERE id = ?", [id]);
   }
+
 
   // 앱이 종료되면, DB 자동으로 닫히지만,
   // 원할 때 종료하고 싶은 경우  사용됨.

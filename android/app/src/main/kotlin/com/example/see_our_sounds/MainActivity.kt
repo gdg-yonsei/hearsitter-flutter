@@ -1,4 +1,4 @@
-package com.example.see_our_sounds
+package com.example.hear_sitter
 
 import io.flutter.embedding.android.FlutterActivity
 

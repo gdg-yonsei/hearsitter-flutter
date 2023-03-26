@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:see_our_sounds/src/core/core.dart';
-import 'package:see_our_sounds/src/core/app_constants.dart';
-import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
-import 'package:sound_stream/sound_stream.dart';
+import 'package:hear_sitter/src/core/core.dart';
+import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/models/audio_tagging_model.dart';
 
 abstract class AudioTaggingService {
   Future<void> getPong();

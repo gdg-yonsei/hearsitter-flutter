@@ -1,6 +1,6 @@
 {
-    "name": "see_our_sounds",
-    "short_name": "see_our_sounds",
+    "name": "hear_sitter",
+    "short_name": "hear_sitter",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

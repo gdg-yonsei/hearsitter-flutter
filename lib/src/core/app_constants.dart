@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:see_our_sounds/src/core/app_assets.dart';
+import 'package:hear_sitter/src/core/app_assets.dart';
 
 class AppUri {
   AppUri._();
@@ -38,86 +38,88 @@ enum SoundCategory {
   PAPA, // 아빠
 }
 
-String soundCategoryIconLight(SoundCategory soundCategory) {
-  switch (soundCategory) {
-    case SoundCategory.BABY_CRYING:
-      return AppAssets.infantCryingIconLight;
-    case SoundCategory.CRACK_SOUND:
-      return AppAssets.crackIconLight;
-    case SoundCategory.FIRE_ALARM:
-      return AppAssets.fireAlarmIconLight;
-    case SoundCategory.GUN_SHOT:
-      return AppAssets.gunIconLight;
-    case SoundCategory.CAR_HORN:
-      return AppAssets.carHornIconLight;
-    case SoundCategory.NAME:
-      return AppAssets.nameIconLight;
-    case SoundCategory.MAMA:
-      return AppAssets.mamaPapaIconLight;
-    case SoundCategory.PAPA:
-      return AppAssets.mamaPapaIconLight;
+extension SoundCategoryUtil on SoundCategory {
+  String get iconLight {
+    switch (this) {
+      case SoundCategory.BABY_CRYING:
+        return AppAssets.infantCryingIconLight;
+      case SoundCategory.CRACK_SOUND:
+        return AppAssets.crackIconLight;
+      case SoundCategory.FIRE_ALARM:
+        return AppAssets.fireAlarmIconLight;
+      case SoundCategory.GUN_SHOT:
+        return AppAssets.gunIconLight;
+      case SoundCategory.CAR_HORN:
+        return AppAssets.carHornIconLight;
+      case SoundCategory.NAME:
+        return AppAssets.nameIconLight;
+      case SoundCategory.MAMA:
+        return AppAssets.mamaPapaIconLight;
+      case SoundCategory.PAPA:
+        return AppAssets.mamaPapaIconLight;
+    }
   }
-}
 
-String soundCategoryIconDark(SoundCategory soundCategory) {
-  switch (soundCategory) {
-    case SoundCategory.BABY_CRYING:
-      return AppAssets.infantCryingIconDark;
-    case SoundCategory.CRACK_SOUND:
-      return AppAssets.crackIconDark;
-    case SoundCategory.FIRE_ALARM:
-      return AppAssets.fireAlarmIconDark;
-    case SoundCategory.GUN_SHOT:
-      return AppAssets.gunIconDark;
-    case SoundCategory.CAR_HORN:
-      return AppAssets.carHornIconDark;
-    case SoundCategory.NAME:
-      return AppAssets.nameIconDark;
-    case SoundCategory.MAMA:
-      return AppAssets.mamaPapaIconDark;
-    case SoundCategory.PAPA:
-      return AppAssets.mamaPapaIconDark;
+  String get iconDark {
+    switch (this) {
+      case SoundCategory.BABY_CRYING:
+        return AppAssets.infantCryingIconDark;
+      case SoundCategory.CRACK_SOUND:
+        return AppAssets.crackIconDark;
+      case SoundCategory.FIRE_ALARM:
+        return AppAssets.fireAlarmIconDark;
+      case SoundCategory.GUN_SHOT:
+        return AppAssets.gunIconDark;
+      case SoundCategory.CAR_HORN:
+        return AppAssets.carHornIconDark;
+      case SoundCategory.NAME:
+        return AppAssets.nameIconDark;
+      case SoundCategory.MAMA:
+        return AppAssets.mamaPapaIconDark;
+      case SoundCategory.PAPA:
+        return AppAssets.mamaPapaIconDark;
+    }
   }
-}
 
-String soundCategoryToLabel(SoundCategory soundCategory) {
-  switch (soundCategory) {
-    case SoundCategory.BABY_CRYING:
-      return 'Baby Crying';
-    case SoundCategory.CRACK_SOUND:
-      return 'Glass';
-    case SoundCategory.FIRE_ALARM:
-      return 'Fire alarm';
-    case SoundCategory.GUN_SHOT:
-      return 'Gunshot';
-    case SoundCategory.CAR_HORN:
-      return 'Car horn';
-    case SoundCategory.NAME:
-      return 'Name';
-    case SoundCategory.MAMA:
-      return 'Mama';
-    case SoundCategory.PAPA:
-      return 'Papa';
+  String get label {
+    switch (this) {
+      case SoundCategory.BABY_CRYING:
+        return 'Baby Crying';
+      case SoundCategory.CRACK_SOUND:
+        return 'Glass';
+      case SoundCategory.FIRE_ALARM:
+        return 'Fire alarm';
+      case SoundCategory.GUN_SHOT:
+        return 'Gunshot';
+      case SoundCategory.CAR_HORN:
+        return 'Car horn';
+      case SoundCategory.NAME:
+        return 'Name';
+      case SoundCategory.MAMA:
+        return 'Mama';
+      case SoundCategory.PAPA:
+        return 'Papa';
+    }
   }
-}
 
-Color soundCategoryColor(SoundCategory soundCategory) {
-  switch (soundCategory) {
-    case SoundCategory.BABY_CRYING:
-      return const Color(0xffffd400);
-    case SoundCategory.CRACK_SOUND:
-      return const Color(0xff0072db);
-    case SoundCategory.FIRE_ALARM:
-      return const Color(0xffe94025);
-    case SoundCategory.GUN_SHOT:
-      return Color(0xff473b3d);
-    case SoundCategory.CAR_HORN:
-      return Color(0xff7c1bbb);
-    case SoundCategory.NAME:
-      return Color(0xffffa7cb);
-    case SoundCategory.MAMA:
-      return Color(0xffff6e11);
-    case SoundCategory.PAPA:
-      return Color(0xff008d62);
+  Color get color {
+    switch (this) {
+      case SoundCategory.BABY_CRYING:
+        return const Color(0xffffd400);
+      case SoundCategory.CRACK_SOUND:
+        return const Color(0xff0072db);
+      case SoundCategory.FIRE_ALARM:
+        return const Color(0xffe94025);
+      case SoundCategory.GUN_SHOT:
+        return const Color(0xff473b3d);
+      case SoundCategory.CAR_HORN:
+        return const Color(0xff7c1bbb);
+      case SoundCategory.NAME:
+        return const Color(0xffffa7cb);
+      case SoundCategory.MAMA:
+        return const Color(0xffff6e11);
+      case SoundCategory.PAPA:
+        return const Color(0xff008d62);
+    }
   }
 }

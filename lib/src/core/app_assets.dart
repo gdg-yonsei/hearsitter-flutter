@@ -1,7 +1,8 @@
 class AppAssets {
   AppAssets._();
 
-  static const String logo = "";
+  static const String logo1 = "assets/logo/logo1.png";
+  static const String logo2 = "assets/logo/logo2.png";
   static const String announcementIconDark =
       'assets/icon_dark/announcement_dark.png';
   static const String announcementIconLight =

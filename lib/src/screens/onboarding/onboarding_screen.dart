@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:see_our_sounds/src/core/utils/sharedprefs_util.dart';
-import 'package:see_our_sounds/src/core/app_constants.dart';
-import 'package:see_our_sounds/src/screens/category/widgets/bottom_nav_button.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hear_sitter/src/core/utils/router_util.dart';
+import 'package:hear_sitter/src/core/utils/sharedprefs_util.dart';
+import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/screens/category/widgets/bottom_nav_button.dart';
 
 final validateNameProvider = StateProvider<bool>((ref) => false);
 
@@ -81,6 +83,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           onTap: () {
             _prefs.setString('userName', textEditingController.text);
             _prefs.setBool('isOnboard', true);
+            context.go(APP_SCREEN.category.routePath);
           },
           validate: validateName,
           text: 'Next'),

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.see_our_sounds">
+    package="com.example.hear_sitter">
 
    <!-- Permissions options for the `location` group -->
    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -18,7 +18,7 @@
         </intent>
    </queries>
    <application
-        android:label="see_our_sounds"
+        android:label="hear_sitter"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

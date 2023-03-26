@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:see_our_sounds/src/core/app_constants.dart';
+import 'package:hear_sitter/src/core/app_constants.dart';
 
 class CategoryCard extends StatelessWidget {
   final String imgUrl;

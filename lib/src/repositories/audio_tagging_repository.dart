@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:see_our_sounds/src/core/utils/database_util.dart';
-import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
+import 'package:hear_sitter/src/core/utils/database_util.dart';
+import 'package:hear_sitter/src/models/audio_tagging_model.dart';
 
 abstract class AudioTaggingRepository {
   Future<dynamic> getAllHistory();

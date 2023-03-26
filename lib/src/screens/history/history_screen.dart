@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
-import 'package:see_our_sounds/src/providers/audio_tagging_db_provider.dart';
+import 'package:hear_sitter/src/models/audio_tagging_model.dart';
+import 'package:hear_sitter/src/providers/audio_tagging_db_provider.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({Key? key}) : super(key: key);

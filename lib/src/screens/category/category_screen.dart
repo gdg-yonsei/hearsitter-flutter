@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:see_our_sounds/src/core/app_constants.dart';
-import 'package:see_our_sounds/src/screens/category/widgets/category_card.dart';
-import 'package:see_our_sounds/src/screens/category/widgets/bottom_nav_button.dart';
+import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/screens/category/widgets/category_card.dart';
+import 'package:hear_sitter/src/screens/category/widgets/bottom_nav_button.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -45,55 +45,48 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       CategoryCard(
                           color: AppColor.primaryColor,
                           labelColor: Colors.white,
-                          audioLabel:
-                              soundCategoryToLabel(SoundCategory.BABY_CRYING),
-                          imgUrl:
-                              soundCategoryIconLight(SoundCategory.BABY_CRYING),
+                          audioLabel: SoundCategory.BABY_CRYING.label,
+                          imgUrl: SoundCategory.BABY_CRYING.iconLight,
                           width: 120,
                           onTap: () {},
                           isSelected: false),
                       CategoryCard(
                           audioLabel: 'Crack Sound',
                           width: 130,
-                          imgUrl:
-                              soundCategoryIconDark(SoundCategory.CRACK_SOUND),
+                          imgUrl: SoundCategory.CRACK_SOUND.iconDark,
                           onTap: () {},
                           isSelected: false),
                       CategoryCard(
-                          audioLabel:
-                              soundCategoryToLabel(SoundCategory.FIRE_ALARM),
-                          imgUrl:
-                              soundCategoryIconDark(SoundCategory.FIRE_ALARM),
+                          audioLabel: SoundCategory.FIRE_ALARM.label,
+                          imgUrl: SoundCategory.FIRE_ALARM.iconDark,
                           width: 110,
                           onTap: () {},
                           isSelected: false),
                       CategoryCard(
-                          audioLabel:
-                              soundCategoryToLabel(SoundCategory.GUN_SHOT),
-                          imgUrl: soundCategoryIconDark(SoundCategory.GUN_SHOT),
+                          audioLabel: SoundCategory.GUN_SHOT.label,
+                          imgUrl: SoundCategory.GUN_SHOT.iconDark,
                           onTap: () {},
                           width: 95,
                           isSelected: false),
                       CategoryCard(
-                          audioLabel:
-                              soundCategoryToLabel(SoundCategory.CAR_HORN),
-                          imgUrl: soundCategoryIconDark(SoundCategory.CAR_HORN),
+                          audioLabel: SoundCategory.CAR_HORN.label,
+                          imgUrl: SoundCategory.CAR_HORN.iconDark,
                           width: 100,
                           onTap: () {},
                           isSelected: false),
                       CategoryCard(
-                          audioLabel: soundCategoryToLabel(SoundCategory.NAME),
-                          imgUrl: soundCategoryIconDark(SoundCategory.NAME),
+                          audioLabel: SoundCategory.NAME.label,
+                          imgUrl: SoundCategory.NAME.iconDark,
                           onTap: () {},
                           isSelected: false),
                       CategoryCard(
-                          audioLabel: soundCategoryToLabel(SoundCategory.MAMA),
-                          imgUrl: soundCategoryIconDark(SoundCategory.MAMA),
+                          audioLabel: SoundCategory.MAMA.label,
+                          imgUrl: SoundCategory.MAMA.iconDark,
                           onTap: () {},
                           isSelected: false),
                       CategoryCard(
-                          audioLabel: soundCategoryToLabel(SoundCategory.PAPA),
-                          imgUrl: soundCategoryIconDark(SoundCategory.PAPA),
+                          audioLabel: SoundCategory.PAPA.label,
+                          imgUrl: SoundCategory.PAPA.iconDark,
                           onTap: () {},
                           isSelected: false),
                     ],

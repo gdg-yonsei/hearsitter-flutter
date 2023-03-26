@@ -1,33 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:see_our_sounds/src/core/utils/sharedprefs_util.dart';
-import 'package:see_our_sounds/src/screens/home/home_screen.dart';
+import 'package:hear_sitter/src/core/app_router.dart';
+import 'package:hear_sitter/src/core/app_theme.dart';
+import 'package:hear_sitter/src/core/utils/sharedprefs_util.dart';
+import 'package:hear_sitter/src/screens/home/home_screen.dart';
 
-import 'package:see_our_sounds/src/screens/onboarding/onboarding_screen.dart';
+import 'package:hear_sitter/src/screens/onboarding/onboarding_screen.dart';
 
 late bool isOnboard;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesUtil.initialize();
-  final prefs = SharedPreferencesUtil().prefs;
-  isOnboard = prefs.getBool('isOnboard') ?? false;
+  // final prefs = SharedPreferencesUtil().prefs;
+  // isOnboard = prefs.getBool('isOnboard') ?? false;
   runApp(ProviderScope(child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    return MaterialApp.router(
       title: 'HearSitter',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'NotoSansKR',
-          scaffoldBackgroundColor: Colors.white),
-      home: isOnboard ? const HomseScreen() : const OnboardingScreen(),
+      theme: themeData(),
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
+      routerDelegate: router.routerDelegate,
+
+      // home: isOnboard ? const HomseScreen() : const OnboardingScreen(),
     );
   }
 }

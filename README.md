@@ -1,4 +1,4 @@
-# see_our_sounds
+# hear_sitter
 
 A new Flutter project.
 

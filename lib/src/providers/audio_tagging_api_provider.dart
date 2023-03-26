@@ -3,9 +3,9 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:see_our_sounds/src/core/utils/audio_util.dart';
-import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
-import 'package:see_our_sounds/src/services/audio_tagging_service.dart';
+import 'package:hear_sitter/src/core/utils/audio_util.dart';
+import 'package:hear_sitter/src/models/audio_tagging_model.dart';
+import 'package:hear_sitter/src/services/audio_tagging_service.dart';
 import 'package:sound_stream/sound_stream.dart';
 
 final recorderStreamProvider =

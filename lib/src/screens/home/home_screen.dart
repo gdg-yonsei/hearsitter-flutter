@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:see_our_sounds/src/core/app_constants.dart';
-import 'package:see_our_sounds/src/models/audio_tagging_model.dart';
-import 'package:see_our_sounds/src/providers/audio_tagging_api_provider.dart';
-import 'package:see_our_sounds/src/providers/audio_tagging_db_provider.dart';
-import 'package:see_our_sounds/src/providers/decibel_provider.dart';
-import 'package:see_our_sounds/src/providers/stt_provider.dart';
-import 'package:see_our_sounds/src/screens/home/widgets/decibel_history_chart.dart';
-import 'package:see_our_sounds/src/screens/home/widgets/toggle_button.dart';
+import 'package:hear_sitter/src/core/app_assets.dart';
+import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/models/audio_tagging_model.dart';
+import 'package:hear_sitter/src/providers/audio_tagging_api_provider.dart';
+import 'package:hear_sitter/src/providers/audio_tagging_db_provider.dart';
+import 'package:hear_sitter/src/providers/decibel_provider.dart';
+import 'package:hear_sitter/src/providers/stt_provider.dart';
+import 'package:hear_sitter/src/screens/home/widgets/decibel_history_chart.dart';
+import 'package:hear_sitter/src/screens/home/widgets/toggle_button.dart';
 
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -60,10 +61,10 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                         size: 24,
                         color: AppColor.lightGrayColor,
                       )),
-                  const Text(
-                    'HearSitter',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                  ),
+                  SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: Image.asset(AppAssets.logo2)),
                   appBarIconButton(
                       onTap: () {},
                       icon: const Icon(
