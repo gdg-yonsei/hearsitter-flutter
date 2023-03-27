@@ -1,19 +1,57 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/core/utils/router_util.dart';
+import 'package:hear_sitter/src/core/utils/sharedprefs_util.dart';
 import 'package:hear_sitter/src/screens/category/widgets/category_card.dart';
 import 'package:hear_sitter/src/screens/category/widgets/bottom_nav_button.dart';
 
-class CategoryScreen extends StatefulWidget {
+final _prefs = SharedPreferencesUtil().prefs;
+final isSelectedInfantCryingProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('infantCrying') ?? false);
+final isSelectedCrackSoundProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('crackSound') ?? false);
+final isSelectedFireAlarmProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('fireAlarm') ?? false);
+final isSelectedGunShotProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('gunShot') ?? false);
+final isSelectedCarHornProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('carHorn') ?? false);
+final isSelectedNameProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('name') ?? false);
+final isSelectedMamaProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('mama') ?? false);
+final isSelectedPapaProvider =
+    StateProvider<bool>((ref) => _prefs.getBool('papa') ?? false);
+
+class CategoryScreen extends ConsumerStatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
 
   @override
-  State<CategoryScreen> createState() => _CategoryScreenState();
+  ConsumerState<CategoryScreen> createState() => _CategoryScreenState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
+class _CategoryScreenState extends ConsumerState<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
+    final isSelectedInfantCrying = ref.watch(isSelectedInfantCryingProvider);
+    final isSelectedCrackSound = ref.watch(isSelectedCrackSoundProvider);
+    final isSelectedFireAlarm = ref.watch(isSelectedFireAlarmProvider);
+    final isSelectedGunShot = ref.watch(isSelectedGunShotProvider);
+    final isSelectedCarHorn = ref.watch(isSelectedCarHornProvider);
+    final isSelectedName = ref.watch(isSelectedNameProvider);
+    final isSelectedMama = ref.watch(isSelectedMamaProvider);
+    final isSelectedPapa = ref.watch(isSelectedPapaProvider);
+
+    final validateSelected = isSelectedInfantCrying ||
+        isSelectedCrackSound ||
+        isSelectedFireAlarm ||
+        isSelectedGunShot ||
+        isSelectedCarHorn ||
+        isSelectedName ||
+        isSelectedMama ||
+        isSelectedPapa;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -43,52 +81,93 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     runSpacing: 13,
                     children: [
                       CategoryCard(
-                          color: AppColor.primaryColor,
-                          labelColor: Colors.white,
-                          audioLabel: SoundCategory.BABY_CRYING.label,
-                          imgUrl: SoundCategory.BABY_CRYING.iconLight,
+                          audioLabel: SoundCategory.INFANT_CRYING.label,
+                          imgUrl: isSelectedInfantCrying
+                              ? SoundCategory.INFANT_CRYING.iconLight
+                              : SoundCategory.INFANT_CRYING.iconDark,
                           width: 120,
-                          onTap: () {},
-                          isSelected: false),
+                          onTap: () {
+                            ref
+                                .read(isSelectedInfantCryingProvider.notifier)
+                                .state = isSelectedInfantCrying ? false : true;
+                          },
+                          isSelected: isSelectedInfantCrying),
                       CategoryCard(
                           audioLabel: 'Crack Sound',
                           width: 130,
-                          imgUrl: SoundCategory.CRACK_SOUND.iconDark,
-                          onTap: () {},
-                          isSelected: false),
+                          imgUrl: isSelectedCrackSound
+                              ? SoundCategory.CRACK_SOUND.iconLight
+                              : SoundCategory.CRACK_SOUND.iconDark,
+                          onTap: () {
+                            ref
+                                .read(isSelectedCrackSoundProvider.notifier)
+                                .state = isSelectedCrackSound ? false : true;
+                          },
+                          isSelected: isSelectedCrackSound),
                       CategoryCard(
                           audioLabel: SoundCategory.FIRE_ALARM.label,
-                          imgUrl: SoundCategory.FIRE_ALARM.iconDark,
+                          imgUrl: isSelectedFireAlarm
+                              ? SoundCategory.FIRE_ALARM.iconLight
+                              : SoundCategory.FIRE_ALARM.iconDark,
                           width: 110,
-                          onTap: () {},
-                          isSelected: false),
+                          onTap: () {
+                            ref
+                                .read(isSelectedFireAlarmProvider.notifier)
+                                .state = isSelectedFireAlarm ? false : true;
+                          },
+                          isSelected: isSelectedFireAlarm),
                       CategoryCard(
                           audioLabel: SoundCategory.GUN_SHOT.label,
-                          imgUrl: SoundCategory.GUN_SHOT.iconDark,
-                          onTap: () {},
+                          imgUrl: isSelectedGunShot
+                              ? SoundCategory.GUN_SHOT.iconLight
+                              : SoundCategory.GUN_SHOT.iconDark,
+                          onTap: () {
+                            ref.read(isSelectedGunShotProvider.notifier).state =
+                                isSelectedGunShot ? false : true;
+                          },
                           width: 95,
-                          isSelected: false),
+                          isSelected: isSelectedGunShot),
                       CategoryCard(
                           audioLabel: SoundCategory.CAR_HORN.label,
-                          imgUrl: SoundCategory.CAR_HORN.iconDark,
+                          imgUrl: isSelectedCarHorn
+                              ? SoundCategory.CAR_HORN.iconLight
+                              : SoundCategory.CAR_HORN.iconDark,
                           width: 100,
-                          onTap: () {},
-                          isSelected: false),
+                          onTap: () {
+                            ref.read(isSelectedCarHornProvider.notifier).state =
+                                isSelectedCarHorn ? false : true;
+                          },
+                          isSelected: isSelectedCarHorn),
                       CategoryCard(
                           audioLabel: SoundCategory.NAME.label,
-                          imgUrl: SoundCategory.NAME.iconDark,
-                          onTap: () {},
-                          isSelected: false),
+                          imgUrl: isSelectedName
+                              ? SoundCategory.NAME.iconLight
+                              : SoundCategory.NAME.iconDark,
+                          onTap: () {
+                            ref.read(isSelectedNameProvider.notifier).state =
+                                isSelectedName ? false : true;
+                          },
+                          isSelected: isSelectedName),
                       CategoryCard(
                           audioLabel: SoundCategory.MAMA.label,
-                          imgUrl: SoundCategory.MAMA.iconDark,
-                          onTap: () {},
-                          isSelected: false),
+                          imgUrl: isSelectedMama
+                              ? SoundCategory.MAMA.iconLight
+                              : SoundCategory.MAMA.iconDark,
+                          onTap: () {
+                            ref.read(isSelectedMamaProvider.notifier).state =
+                                isSelectedMama ? false : true;
+                          },
+                          isSelected: isSelectedMama),
                       CategoryCard(
                           audioLabel: SoundCategory.PAPA.label,
-                          imgUrl: SoundCategory.PAPA.iconDark,
-                          onTap: () {},
-                          isSelected: false),
+                          imgUrl: isSelectedPapa
+                              ? SoundCategory.PAPA.iconLight
+                              : SoundCategory.PAPA.iconDark,
+                          onTap: () {
+                            ref.read(isSelectedPapaProvider.notifier).state =
+                                isSelectedPapa ? false : true;
+                          },
+                          isSelected: isSelectedPapa),
                     ],
                   ),
                 ),
@@ -97,8 +176,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ),
       ),
-      bottomNavigationBar:
-          bottomNavButton(onTap: () {}, validate: false, text: 'Done'),
+      bottomNavigationBar: bottomNavButton(
+          onTap: () {
+            if (validateSelected) {
+              _prefs.setBool('infantCrying', isSelectedInfantCrying);
+              _prefs.setBool('crackSound', isSelectedCrackSound);
+              _prefs.setBool('fireAlarm', isSelectedFireAlarm);
+              _prefs.setBool('gunShot', isSelectedGunShot);
+              _prefs.setBool('carHorn', isSelectedCarHorn);
+              _prefs.setBool('name', isSelectedName);
+              _prefs.setBool('mama', isSelectedName);
+              _prefs.setBool('papa', isSelectedPapa);
+
+              context.go(APP_SCREEN.home.routePath);
+            }
+          },
+          validate: validateSelected,
+          text: 'Done'),
     );
   }
 }

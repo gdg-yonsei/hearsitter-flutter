@@ -28,7 +28,7 @@ class AppDatabase {
 }
 
 enum SoundCategory {
-  BABY_CRYING, // 아기 울음 소리
+  INFANT_CRYING, // 아기 울음 소리
   CRACK_SOUND, // 유리 깨지는 소리
   FIRE_ALARM, // 화재 알람
   GUN_SHOT, // 총소리
@@ -41,7 +41,7 @@ enum SoundCategory {
 extension SoundCategoryUtil on SoundCategory {
   String get iconLight {
     switch (this) {
-      case SoundCategory.BABY_CRYING:
+      case SoundCategory.INFANT_CRYING:
         return AppAssets.infantCryingIconLight;
       case SoundCategory.CRACK_SOUND:
         return AppAssets.crackIconLight;
@@ -62,7 +62,7 @@ extension SoundCategoryUtil on SoundCategory {
 
   String get iconDark {
     switch (this) {
-      case SoundCategory.BABY_CRYING:
+      case SoundCategory.INFANT_CRYING:
         return AppAssets.infantCryingIconDark;
       case SoundCategory.CRACK_SOUND:
         return AppAssets.crackIconDark;
@@ -83,8 +83,8 @@ extension SoundCategoryUtil on SoundCategory {
 
   String get label {
     switch (this) {
-      case SoundCategory.BABY_CRYING:
-        return 'Baby Crying';
+      case SoundCategory.INFANT_CRYING:
+        return 'Infant Crying';
       case SoundCategory.CRACK_SOUND:
         return 'Glass';
       case SoundCategory.FIRE_ALARM:
@@ -104,7 +104,7 @@ extension SoundCategoryUtil on SoundCategory {
 
   Color get color {
     switch (this) {
-      case SoundCategory.BABY_CRYING:
+      case SoundCategory.INFANT_CRYING:
         return const Color(0xffffd400);
       case SoundCategory.CRACK_SOUND:
         return const Color(0xff0072db);

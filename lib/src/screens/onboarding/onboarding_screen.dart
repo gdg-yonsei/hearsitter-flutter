@@ -81,9 +81,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ),
       bottomNavigationBar: bottomNavButton(
           onTap: () {
-            _prefs.setString('userName', textEditingController.text);
-            _prefs.setBool('isOnboard', true);
-            context.go(APP_SCREEN.category.routePath);
+            if (validateName){
+              _prefs.setString('userName', textEditingController.text);
+              _prefs.setBool('isOnboard', true);
+              context.go(APP_SCREEN.category.routePath);
+            }
           },
           validate: validateName,
           text: 'Next'),

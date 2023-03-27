@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hear_sitter/src/core/app_assets.dart';
 import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/core/utils/router_util.dart';
 import 'package:hear_sitter/src/models/audio_tagging_model.dart';
 import 'package:hear_sitter/src/providers/audio_tagging_api_provider.dart';
 import 'package:hear_sitter/src/providers/audio_tagging_db_provider.dart';
@@ -66,7 +68,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                       width: 50,
                       child: Image.asset(AppAssets.logo2)),
                   appBarIconButton(
-                      onTap: () {},
+                      onTap: () {
+                        context.go(APP_SCREEN.category.routePath);
+                      },
                       icon: const Icon(
                         Icons.grid_view_rounded,
                         size: 25,
@@ -76,15 +80,16 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
               ),
             ),
             // Text(stt.speechToText.lastRecognizedWords),
-            Text(audioTaggingModel.isAlert.toString()),
-            Text(audioTaggingModel.isAlert.toString()),
+            // Text(audioTaggingModel.isAlert.toString()),
             StreamBuilder(
               stream: audioTaggingApi,
               builder: (context, snapshot) {
                 return const SizedBox.shrink();
               },
             ),
-            const Spacer(),
+            const Spacer(
+              flex: 2,
+            ),
             historyTitle(),
             Container(
               width: double.infinity,
@@ -151,7 +156,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                       ],
                     )),
             const Spacer(),
-            bottomNavigationBar(isRecording)
+            bottomNavBar(isRecording)
           ],
         ),
       ),
@@ -180,7 +185,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
     );
   }
 
-  Widget bottomNavigationBar(bool isRecording) {
+  Widget bottomNavBar(bool isRecording) {
     return Container(
       width: double.infinity,
       height: 60,
@@ -301,9 +306,8 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
   }
 
   Widget decibelGauge(int decibel) {
-    return SizedBox(
-      width: 290,
-      height: 280,
+    return AspectRatio(
+      aspectRatio: 1.3,
       child: SfRadialGauge(
         axes: <RadialAxis>[
           RadialAxis(
@@ -327,7 +331,8 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                 value: decibel.toDouble(),
                 cornerStyle: CornerStyle.bothCurve,
                 width: 25,
-                color: AppColor.primaryColor,
+                color:
+                    decibel > 89 ? AppColor.errorColor : AppColor.primaryColor,
               ),
             ],
             annotations: [
