@@ -9,7 +9,7 @@ Widget bottomNavButton(
     onTap: onTap,
     child: Container(
       width: double.infinity,
-      height: 55,
+      height: 60,
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       decoration: BoxDecoration(
           color: validate ? AppColor.primaryColor : AppColor.lightGrayColor,

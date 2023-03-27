@@ -53,7 +53,7 @@ class DecibelHistoryChart extends StatelessWidget {
                       sideTitles: SideTitles(
                           showTitles: true,
                           interval: 20,
-                          reservedSize: 28,
+                          reservedSize: 25,
                           getTitlesWidget: leftTitleWidgets)),
                 ),
                 borderData: FlBorderData(

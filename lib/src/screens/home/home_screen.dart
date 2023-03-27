@@ -10,6 +10,7 @@ import 'package:hear_sitter/src/providers/audio_tagging_db_provider.dart';
 import 'package:hear_sitter/src/providers/decibel_provider.dart';
 import 'package:hear_sitter/src/providers/stt_provider.dart';
 import 'package:hear_sitter/src/screens/home/widgets/decibel_history_chart.dart';
+import 'package:hear_sitter/src/screens/home/widgets/decibel_scale_chart.dart';
 import 'package:hear_sitter/src/screens/home/widgets/toggle_button.dart';
 
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -57,7 +58,16 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   appBarIconButton(
-                      onTap: () {},
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SimpleDialog(
+                                title: Text('Decibel Scale'),
+                                children: [DecibelScaleChart()],
+                              );
+                            });
+                      },
                       icon: const Icon(
                         Icons.question_mark_rounded,
                         size: 24,
