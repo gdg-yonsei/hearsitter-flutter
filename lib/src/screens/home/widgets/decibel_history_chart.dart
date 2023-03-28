@@ -26,7 +26,7 @@ class DecibelHistoryChart extends StatelessWidget {
               )),
           const SizedBox(height: 3,),
           AspectRatio(
-            aspectRatio: 2.7,
+            aspectRatio: 3.4,
             child: LineChart(LineChartData(
                 minX: 0,
                 maxX: 60,

@@ -62,7 +62,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return SimpleDialog(
+                              return const SimpleDialog(
                                 title: Text('Decibel Scale'),
                                 children: [DecibelScaleChart()],
                               );
@@ -90,7 +90,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
               ),
             ),
             // Text(stt.speechToText.lastRecognizedWords),
-            // Text(audioTaggingModel.isAlert.toString()),
+            Text(audioTaggingModel.label.toString()),
             StreamBuilder(
               stream: audioTaggingApi,
               builder: (context, snapshot) {
@@ -102,70 +102,35 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
             ),
             historyTitle(),
             Container(
-              width: double.infinity,
-              height: 80,
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.shade100,
-                        blurRadius: 2,
-                        spreadRadius: 1)
-                  ]),
-              child: history.isEmpty
-                  ? Row(
-                      children: [
-                        iconBox(
-                            const Icon(
-                              Icons.description_rounded,
-                              color: AppColor.grayColor,
-                              size: 30,
-                            ),
-                            AppColor.lightGrayColor),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        const Text(
-                          'There is no history yet.',
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: AppColor.grayColor),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      children: [Text(history[0].label)],
-                    ),
-            ),
+                width: double.infinity,
+                height: 80,
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.shade100,
+                          blurRadius: 2,
+                          spreadRadius: 1)
+                    ]),
+                child: history.isEmpty ? noHistoryRow() : historyRow(history)),
             decibelStream.when(
                 data: (data) {
+                  int currentDecibel = data[0] as int;
                   List<int> decibelHistory = data[1] as List<int>;
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      DecibelHistoryChart(
-                        decibelHistory: decibelHistory,
-                        lineColor: AppColor.primaryColor,
-                      ),
-                      decibelGauge(data[0] as int),
-                    ],
-                  );
+                  return decibelHistoryGauge(
+                      decibelHistory: decibelHistory,
+                      lineColor: AppColor.primaryColor,
+                      decibel: currentDecibel);
                 },
                 error: (error, stackTrace) => Text('Error : $error'),
-                loading: () => Column(
-                      children: [
-                        DecibelHistoryChart(
-                          decibelHistory: List.filled(80, 0),
-                          lineColor: Colors.transparent,
-                        ),
-                        decibelGauge(0),
-                      ],
-                    )),
-            const Spacer(),
+                loading: () => decibelHistoryGauge(
+                    decibelHistory: List.filled(80, 0),
+                    lineColor: Colors.transparent,
+                    decibel: 0)),
             bottomNavBar(isRecording)
           ],
         ),
@@ -173,7 +138,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
     ));
   }
 
-  Row historyTitle() {
+  Widget historyTitle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -210,12 +175,12 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
           ]),
       child: Row(
         children: [
-          bottomNavigationIcon(
+          bottomNavIcon(
               onTap: () {}, icon: Icons.description_rounded, text: 'History'),
           const SizedBox(
             width: 20,
           ),
-          bottomNavigationIcon(
+          bottomNavIcon(
               onTap: () {}, icon: Icons.settings_rounded, text: 'Setting'),
           const Padding(
             padding: EdgeInsets.only(left: 20),
@@ -257,7 +222,103 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
     );
   }
 
-  Widget bottomNavigationIcon(
+  Widget noHistoryRow() {
+    return Row(
+      children: [
+        iconBox(
+            const Icon(
+              Icons.description_rounded,
+              color: AppColor.grayColor,
+              size: 30,
+            ),
+            AppColor.lightGrayColor),
+        const SizedBox(
+          width: 10,
+        ),
+        const Text(
+          'There is no history yet.',
+          style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: AppColor.grayColor),
+        ),
+      ],
+    );
+  }
+
+  Row historyRow(List<AudioTaggingModel> history) {
+    late Color boxColor;
+    late String boxImgUrl;
+    String historyLabel = history[0].label;
+    String historyDate = history[0].date;
+    int historyDecibel = history[0].decibel;
+    if (historyLabel == SoundCategory.INFANT_CRYING.label) {
+      boxColor = SoundCategory.INFANT_CRYING.color;
+      boxImgUrl = SoundCategory.INFANT_CRYING.iconLight;
+    } else if (historyLabel == SoundCategory.CRACK_SOUND.label) {
+      boxColor = SoundCategory.CRACK_SOUND.color;
+      boxImgUrl = SoundCategory.CRACK_SOUND.iconLight;
+    } else if (historyLabel == SoundCategory.FIRE_ALARM.label) {
+      boxColor = SoundCategory.FIRE_ALARM.color;
+      boxImgUrl = SoundCategory.FIRE_ALARM.iconLight;
+    } else if (historyLabel == SoundCategory.GUN_SHOT.label) {
+      boxColor = SoundCategory.GUN_SHOT.color;
+      boxImgUrl = SoundCategory.GUN_SHOT.iconLight;
+    } else if (historyLabel == SoundCategory.CAR_HORN.label) {
+      boxColor = SoundCategory.CAR_HORN.color;
+      boxImgUrl = SoundCategory.CAR_HORN.iconLight;
+    } else if (historyLabel == SoundCategory.NAME.label) {
+      boxColor = SoundCategory.NAME.color;
+      boxImgUrl = SoundCategory.NAME.iconLight;
+    } else if (historyLabel == SoundCategory.MAMA.label) {
+      boxColor = SoundCategory.MAMA.color;
+      boxImgUrl = SoundCategory.MAMA.iconLight;
+    } else if (historyLabel == SoundCategory.PAPA.label) {
+      boxColor = SoundCategory.PAPA.color;
+      boxImgUrl = SoundCategory.PAPA.iconLight;
+    }
+    return Row(
+      children: [
+        historyIconBox(boxImgUrl, boxColor),
+        const SizedBox(
+          width: 20,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              historyLabel,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Row(
+              children: [
+                Text(
+                  '${historyDecibel}dB',
+                  style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColor.darkColor,
+                      fontWeight: FontWeight.w300),
+                ),
+                const SizedBox(
+                  width: 110,
+                ),
+                Text(
+                  historyDate,
+                  style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColor.darkColor,
+                      fontWeight: FontWeight.w300),
+                ),
+              ],
+            )
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget bottomNavIcon(
       {required onTap, required IconData icon, required String text}) {
     return InkWell(
       splashColor: AppColor.primaryColor,
@@ -315,61 +376,86 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
     );
   }
 
-  Widget decibelGauge(int decibel) {
-    return AspectRatio(
-      aspectRatio: 1.3,
-      child: SfRadialGauge(
-        axes: <RadialAxis>[
-          RadialAxis(
-            minimum: 0,
-            maximum: 120,
-            interval: 20,
-            showLastLabel: true,
-            showTicks: false,
-            useRangeColorForAxis: true,
-            axisLineStyle: const AxisLineStyle(
-              thickness: 25,
-              cornerStyle: CornerStyle.bothCurve,
-            ),
-            axisLabelStyle: const GaugeTextStyle(
-              fontSize: 13,
-              fontFamily: 'NotoSansKR',
-              color: AppColor.grayColor,
-            ),
-            pointers: [
-              RangePointer(
-                value: decibel.toDouble(),
-                cornerStyle: CornerStyle.bothCurve,
-                width: 25,
-                color:
-                    decibel > 89 ? AppColor.errorColor : AppColor.primaryColor,
-              ),
-            ],
-            annotations: [
-              GaugeAnnotation(
-                widget: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text: '$decibel\n',
-                      style: const TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.darkColor),
-                      children: const [
-                        TextSpan(
-                          text: 'dB',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w500),
-                        )
-                      ]),
-                ),
-                angle: 90,
-                positionFactor: 0.1,
-              ),
-            ],
-          )
-        ],
+  Widget historyIconBox(String imgUrl, Color boxColor) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        color: boxColor,
       ),
+      child: Image.asset(
+        imgUrl,
+        scale: 2.5,
+      ),
+    );
+  }
+
+  Widget decibelHistoryGauge(
+      {required List<int> decibelHistory,
+      required Color lineColor,
+      required int decibel}) {
+    return Column(
+      children: [
+        DecibelHistoryChart(
+            decibelHistory: decibelHistory, lineColor: lineColor),
+        AspectRatio(
+          aspectRatio: 1.32,
+          child: SfRadialGauge(
+            axes: <RadialAxis>[
+              RadialAxis(
+                minimum: 0,
+                maximum: 120,
+                interval: 20,
+                showLastLabel: true,
+                showTicks: false,
+                useRangeColorForAxis: true,
+                axisLineStyle: const AxisLineStyle(
+                  thickness: 25,
+                  cornerStyle: CornerStyle.bothCurve,
+                ),
+                axisLabelStyle: const GaugeTextStyle(
+                  fontSize: 13,
+                  fontFamily: 'NotoSansKR',
+                  color: AppColor.grayColor,
+                ),
+                pointers: [
+                  RangePointer(
+                    value: decibel.toDouble(),
+                    cornerStyle: CornerStyle.bothCurve,
+                    width: 25,
+                    color: decibel > 89
+                        ? AppColor.errorColor
+                        : AppColor.primaryColor,
+                  ),
+                ],
+                annotations: [
+                  GaugeAnnotation(
+                    widget: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                          text: '$decibel\n',
+                          style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: AppColor.darkColor),
+                          children: const [
+                            TextSpan(
+                              text: 'dB',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            )
+                          ]),
+                    ),
+                    angle: 90,
+                    positionFactor: 0.1,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
