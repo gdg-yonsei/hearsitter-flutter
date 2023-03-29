@@ -39,7 +39,7 @@ class AudioTaggingApiNotifier extends ChangeNotifier {
   Future<void> openRecord() async {
     _recorderStream.status.listen((status) async {
       recorderEnable = status == SoundStreamStatus.Playing;
-      debugPrint(recorderEnable.toString() + '체크');
+      // debugPrint(recorderEnable.toString() + '체크');
       notifyListeners();
     });
 

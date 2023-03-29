@@ -120,8 +120,16 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                 data: (data) {
                   int currentDecibel = data[0] as int;
                   List<int> decibelHistory = data[1] as List<int>;
-                  if(audioTaggingModel.isAlert){
-                    ref.read(audioTaggingDBProvider).addHistory(audioTaggingModel, currentDecibel);
+                  if (audioTaggingModel.isAlert &&
+                      history.isNotEmpty &&
+                      audioTaggingModel.label != history.last.label) {
+                    ref
+                        .read(audioTaggingDBProvider)
+                        .addHistory(audioTaggingModel, currentDecibel);
+                  } else if (audioTaggingModel.isAlert && history.isEmpty) {
+                    ref
+                        .read(audioTaggingDBProvider)
+                        .addHistory(audioTaggingModel, currentDecibel);
                   }
                   return decibelHistoryGauge(
                       decibelHistory: decibelHistory,
@@ -179,7 +187,11 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
       child: Row(
         children: [
           bottomNavIcon(
-              onTap: () {}, icon: Icons.description_rounded, text: 'History'),
+              onTap: () {
+                context.push(APP_SCREEN.history.routePath);
+              },
+              icon: Icons.description_rounded,
+              text: 'History'),
           const SizedBox(
             width: 20,
           ),
@@ -252,9 +264,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
   Row historyRow(List<AudioTaggingModel> history) {
     late Color boxColor;
     late String boxImgUrl;
-    String historyLabel = history[0].label;
-    String historyDate = history[0].date;
-    int historyDecibel = history[0].decibel;
+    String historyLabel = history.last.label;
+    String historyDate = history.last.date;
+    int historyDecibel = history.last.decibel;
     if (historyLabel == SoundCategory.INFANT_CRYING.label) {
       boxColor = SoundCategory.INFANT_CRYING.color;
       boxImgUrl = SoundCategory.INFANT_CRYING.iconLight;
@@ -402,7 +414,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
       children: [
         DecibelHistoryChart(
             decibelHistory: decibelHistory, lineColor: lineColor),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         AspectRatio(
           aspectRatio: 1.3,
           child: SfRadialGauge(

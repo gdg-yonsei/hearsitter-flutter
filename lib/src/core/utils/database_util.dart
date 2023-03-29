@@ -34,18 +34,19 @@ class DatabaseUtil {
   // table 생성
   Future _createDB(Database database, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const integerType = 'INTEGER';
     const textType = 'TEXT';
     const realType = 'REAL';
     const boolType = 'BOOLEAN';
 
     await database.execute(
-        '''CREATE TABLE $tableName (id $idType, Alarm $boolType, Label $textType, Tagging_rate $realType, date $textType)''');
+        '''CREATE TABLE $tableName (id $idType, Alarm $boolType, Label $textType, Tagging_rate $realType, date $textType, decibel $integerType)''');
   }
 
   Future<dynamic> getAllHistory() async {
     final db = await database;
 
-    const orderBy = 'id DESC';
+    const orderBy = 'id ASC';
 
     var res = await db.query(tableName, orderBy: orderBy);
 
@@ -71,7 +72,6 @@ class DatabaseUtil {
     final db = await database;
     await db.rawDelete("DELETE FROM $tableName WHERE id = ?", [id]);
   }
-
 
   // 앱이 종료되면, DB 자동으로 닫히지만,
   // 원할 때 종료하고 싶은 경우  사용됨.

@@ -18,6 +18,7 @@ class HistoryScreen extends ConsumerWidget {
             itemBuilder: (context, idx) {
               return ListTile(
                 title: Text(history[idx].label),
+                subtitle: Text(history[idx].isAlert.toString()),
               );
             }),
       ),
