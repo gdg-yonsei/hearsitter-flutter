@@ -120,7 +120,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                 data: (data) {
                   int currentDecibel = data[0] as int;
                   List<int> decibelHistory = data[1] as List<int>;
-                  if(audioTaggingModel.taggingRate > 0.06){
+                  if(audioTaggingModel.isAlert){
                     ref.read(audioTaggingDBProvider).addHistory(audioTaggingModel, currentDecibel);
                   }
                   return decibelHistoryGauge(

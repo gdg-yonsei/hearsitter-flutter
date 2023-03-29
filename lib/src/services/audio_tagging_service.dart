@@ -31,7 +31,6 @@ class AudioTaggingServiceImpl extends AudioTaggingService {
   @override
   Future<AudioTaggingModel> postAudio(Uint8List data) async {
     final uri = Uri.parse(AppUri.uriBase + AppUri.uriUint);
-    Future.delayed(const Duration(seconds: 1));
     var response = await http.post(uri, body: data);
     if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
