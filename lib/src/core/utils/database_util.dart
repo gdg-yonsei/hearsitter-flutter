@@ -39,7 +39,7 @@ class DatabaseUtil {
     const boolType = 'BOOLEAN';
 
     await database.execute(
-        '''CREATE TABLE $tableName (id $idType, isAlert $boolType, label $textType, taggingRate $realType, date $textType)''');
+        '''CREATE TABLE $tableName (id $idType, Alarm $boolType, Label $textType, Tagging_rate $realType, date $textType)''');
   }
 
   Future<dynamic> getAllHistory() async {

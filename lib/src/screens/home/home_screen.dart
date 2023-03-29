@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hear_sitter/src/core/app_assets.dart';
@@ -9,6 +10,7 @@ import 'package:hear_sitter/src/providers/audio_tagging_api_provider.dart';
 import 'package:hear_sitter/src/providers/audio_tagging_db_provider.dart';
 import 'package:hear_sitter/src/providers/decibel_provider.dart';
 import 'package:hear_sitter/src/providers/stt_provider.dart';
+import 'package:hear_sitter/src/screens/history/history_screen.dart';
 import 'package:hear_sitter/src/screens/home/widgets/decibel_history_chart.dart';
 import 'package:hear_sitter/src/screens/home/widgets/decibel_scale_chart.dart';
 import 'package:hear_sitter/src/screens/home/widgets/toggle_button.dart';
@@ -30,21 +32,20 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
     bool isRecording = ref.watch(isRecordingProvider);
     final stt = ref.watch(sttProvider);
     final audioTaggingApi =
-        ref.watch(recorderStreamProvider).audioTaggingStream();
+        ref.watch(audioTaggingApiProvider).audioTaggingStream();
     AudioTaggingModel audioTaggingModel =
-        ref.watch(recorderStreamProvider).audioTaggingModel;
+        ref.watch(audioTaggingApiProvider).audioTaggingModel;
     final decibelStream = ref.watch(decibelStreamProvider);
     List<AudioTaggingModel> history = ref.watch(audioTaggingDBProvider).history;
-    //
+
     // if (audioTaggingModel.isAlert) {
-    //   ref.read(recorderStreamProvider.notifier).stopRecording();
+    //   ref.read(audioTaggingApiProvider.notifier).stopRecording();
     //   SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
     //     Future.delayed(const Duration(milliseconds: 1500));
     //     Navigator.push(
     //         context, MaterialPageRoute(builder: (context) => HistoryScreen()));
     //   });
     // }
-
     return Scaffold(
         body: SafeArea(
       child: Padding(
@@ -70,7 +71,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                       },
                       icon: const Icon(
                         Icons.question_mark_rounded,
-                        size: 24,
+                        size: 22,
                         color: AppColor.lightGrayColor,
                       )),
                   SizedBox(
@@ -83,23 +84,21 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                       },
                       icon: const Icon(
                         Icons.grid_view_rounded,
-                        size: 25,
+                        size: 23,
                         color: AppColor.lightGrayColor,
                       ))
                 ],
               ),
             ),
             // Text(stt.speechToText.lastRecognizedWords),
-            Text(audioTaggingModel.label.toString()),
+            // Text(audioTaggingModel.label.toString()),
             StreamBuilder(
               stream: audioTaggingApi,
               builder: (context, snapshot) {
                 return const SizedBox.shrink();
               },
             ),
-            const Spacer(
-              flex: 2,
-            ),
+            const Spacer(),
             historyTitle(),
             Container(
                 width: double.infinity,
@@ -121,6 +120,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                 data: (data) {
                   int currentDecibel = data[0] as int;
                   List<int> decibelHistory = data[1] as List<int>;
+                  if(audioTaggingModel.taggingRate > 0.06){
+                    ref.read(audioTaggingDBProvider).addHistory(audioTaggingModel, currentDecibel);
+                  }
                   return decibelHistoryGauge(
                       decibelHistory: decibelHistory,
                       lineColor: AppColor.primaryColor,
@@ -131,6 +133,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                     decibelHistory: List.filled(80, 0),
                     lineColor: Colors.transparent,
                     decibel: 0)),
+            const Spacer(),
             bottomNavBar(isRecording)
           ],
         ),
@@ -181,7 +184,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
             width: 20,
           ),
           bottomNavIcon(
-              onTap: () {}, icon: Icons.settings_rounded, text: 'Setting'),
+              onTap: () {}, icon: Icons.mail_rounded, text: 'Feedback'),
           const Padding(
             padding: EdgeInsets.only(left: 20),
             child: SizedBox(
@@ -211,9 +214,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                 ref.read(isRecordingProvider.notifier).state =
                     isRecording ? false : true;
                 isRecording
-                    ? ref.read(recorderStreamProvider.notifier).stopRecording()
+                    ? ref.read(audioTaggingApiProvider.notifier).stopRecording()
                     : await ref
-                        .read(recorderStreamProvider.notifier)
+                        .read(audioTaggingApiProvider.notifier)
                         .startRecording();
               },
               isRecording: isRecording)
@@ -351,8 +354,8 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
     return GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 45,
-          height: 45,
+          width: 43,
+          height: 43,
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(15)),
               color: Colors.white,
@@ -399,8 +402,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
       children: [
         DecibelHistoryChart(
             decibelHistory: decibelHistory, lineColor: lineColor),
+        const SizedBox(height: 10,),
         AspectRatio(
-          aspectRatio: 1.32,
+          aspectRatio: 1.3,
           child: SfRadialGauge(
             axes: <RadialAxis>[
               RadialAxis(

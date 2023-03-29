@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class LocalNotification {
-  LocalNotification._internal();
+class LocalNotificationUtil{
+  LocalNotificationUtil._internal();
 
   static const channelId = 'S.O.S';
 
-  static final LocalNotification _localNotification =
-      LocalNotification._internal();
+  static final LocalNotificationUtil _localNotification =
+      LocalNotificationUtil._internal();
 
-  factory LocalNotification() {
+  factory LocalNotificationUtil() {
     return _localNotification;
   }
 

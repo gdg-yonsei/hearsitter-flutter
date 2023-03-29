@@ -20,8 +20,8 @@ class _ToggleButtonState extends State<ToggleButton> {
     return GestureDetector(
       onTap: widget.onTap,
       child: AnimatedContainer(
-        height: 40,
-        width: 70,
+        height: 37,
+        width: 67,
         duration: animationDuration,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),

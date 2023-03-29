@@ -8,11 +8,11 @@ import 'package:hear_sitter/src/models/audio_tagging_model.dart';
 import 'package:hear_sitter/src/services/audio_tagging_service.dart';
 import 'package:sound_stream/sound_stream.dart';
 
-final recorderStreamProvider =
-ChangeNotifierProvider((ref) => RecorderStreamNotifier(RecorderStream()));
+final audioTaggingApiProvider =
+    ChangeNotifierProvider((ref) => AudioTaggingApiNotifier(RecorderStream()));
 
-class RecorderStreamNotifier extends ChangeNotifier {
-  RecorderStreamNotifier(this._recorderStream) {
+class AudioTaggingApiNotifier extends ChangeNotifier {
+  AudioTaggingApiNotifier(this._recorderStream)  {
     openRecord();
   }
 
@@ -20,17 +20,14 @@ class RecorderStreamNotifier extends ChangeNotifier {
   List<Uint8List> audioChunks = [];
   final RecorderStream _recorderStream;
   AudioTaggingModel _audioTaggingModel =
-  const AudioTaggingModel(isAlert: false, label: '제발', taggingRate: 0);
+      const AudioTaggingModel(isAlert: false, label: '버전1', taggingRate: 0);
 
   AudioTaggingModel get audioTaggingModel => _audioTaggingModel;
 
   Future<void> openRecord() async {
     _recorderStream.status.listen((status) async {
-      var permissionStatus = await Permission.microphone.status;
-      if (permissionStatus.isGranted) {
-        recorderEnable = status == SoundStreamStatus.Playing;
-        notifyListeners();
-      }
+      recorderEnable = status == SoundStreamStatus.Playing;
+      debugPrint(recorderEnable.toString() + '체크');
       notifyListeners();
     });
 
