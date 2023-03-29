@@ -35,7 +35,7 @@ class AudioTaggingRepositoryImpl extends ChangeNotifier
         .addHistory(audioTagging, currentDecibel)
         .whenComplete(() async {
       audioTagging = audioTagging.copyWith(
-          date: DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
+          date: DateFormat('MM/dd/yyyy HH:mm').format(DateTime.now()),
           decibel: currentDecibel);
       // await Future.delayed(const Duration(milliseconds: 0));
       _history.add(audioTagging);
