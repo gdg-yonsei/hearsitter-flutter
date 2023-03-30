@@ -4,19 +4,18 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class LocalNotificationUtil{
   LocalNotificationUtil._internal();
 
-  static const channelId = 'S.O.S';
+  static const channelId = 'HearSitter';
 
   static final LocalNotificationUtil _localNotification =
       LocalNotificationUtil._internal();
 
-  factory LocalNotificationUtil() {
-    return _localNotification;
-  }
+  factory LocalNotificationUtil() => _localNotification;
+
 
   FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  FlutterLocalNotificationsPlugin initNotification() {
+   initNotification() async {
     var initializationSettingsAndroid =
         AndroidInitializationSettings('ic_launcher');
 
@@ -42,8 +41,8 @@ class LocalNotificationUtil{
 
   Future<void> _showNotification(String? notiTitle, String? notiBody) async {
     var androidNotificationDetails = AndroidNotificationDetails(
-        channelId, 'channel name',
-        channelDescription: 'channel description',
+        channelId, 'HearSitter',
+        channelDescription: 'Sound Detection',
         ticker: 'ticker',
         importance: Importance.max,
         priority: Priority.high);
@@ -56,6 +55,7 @@ class LocalNotificationUtil{
       android: androidNotificationDetails,
       iOS: iosNotificationDetails,
     );
+
 
     await _flutterLocalNotificationsPlugin
         .show(0, notiTitle, notiBody, notificationDetails, payload: '');

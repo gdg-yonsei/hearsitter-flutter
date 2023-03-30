@@ -35,6 +35,7 @@ dependencies:
   flutter_launcher_icons: ^0.12.0
   noise_meter: ^3.1.0
   flutter_email_sender: ^5.2.0
+  audio_streamer: ^2.3.0
 
 flutter_icons:
   android: "ic_launcher"
