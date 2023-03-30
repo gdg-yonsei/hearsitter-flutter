@@ -23,39 +23,39 @@ final audioTaggingApiProvider =
     ChangeNotifierProvider((ref) => AudioTaggingApiNotifier(RecorderStream()));
 
 class AudioTaggingApiNotifier extends ChangeNotifier {
-  AudioTaggingApiNotifier(this._recorderStream) {
+  AudioTaggingApiNotifier(this.recorderStream) {
     openRecord();
   }
 
   bool recorderEnable = false;
   List<Uint8List> audioChunks = [];
   StreamSubscription? audioStream;
-  final RecorderStream _recorderStream;
+  final RecorderStream recorderStream;
   AudioTaggingModel _audioTaggingModel =
       const AudioTaggingModel(isAlert: false, label: '버전1', taggingRate: 0);
 
   AudioTaggingModel get audioTaggingModel => _audioTaggingModel;
 
   Future<void> openRecord() async {
-    _recorderStream.status.listen((status) async {
+    recorderStream.status.listen((status) async {
       recorderEnable = status == SoundStreamStatus.Playing;
       // debugPrint(recorderEnable.toString() + '체크');
       notifyListeners();
     });
 
-    audioStream = _recorderStream.audioStream.listen((data) {
+    audioStream = recorderStream.audioStream.listen((data) {
       audioChunks.add(data);
       if (audioChunks.length > 60) {
         audioChunks.removeAt(0);
       }
     });
 
-    await Future.wait([_recorderStream.initialize()]);
+    await Future.wait([recorderStream.initialize()]);
     notifyListeners();
   }
 
   Stream<AudioTaggingModel> audioTaggingStream() async* {
-    await for (final _ in _recorderStream.audioStream) {
+    await for (final _ in recorderStream.audioStream) {
       Uint8List wav = AudioUtil.toWAV(audioChunks);
       _audioTaggingModel = await AudioTaggingServiceImpl().postAudio(wav);
       debugPrint(_audioTaggingModel.toString());
@@ -66,13 +66,13 @@ class AudioTaggingApiNotifier extends ChangeNotifier {
   }
 
   Future<void> startRecording() async {
-    _recorderStream.start();
+    recorderStream.start();
     await AudioTaggingServiceImpl().getPong();
     notifyListeners();
   }
 
   void stopRecording() {
-    _recorderStream.stop();
+    recorderStream.stop();
     audioChunks.clear();
     notifyListeners();
   }

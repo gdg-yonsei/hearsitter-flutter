@@ -49,11 +49,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 padding: const EdgeInsets.only(top: 5, bottom: 35),
                 margin: const EdgeInsets.only(right: 40),
                 child: const Text(
-                    "To help you better, I would like to get to know your name.",
+                    "To help you better, I would like to know your name.",
                     style: TextStyle(fontSize: 13, color: AppColor.grayColor)),
               ),
-              const Text("What's your name?",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500)),
+              const Text("How would you like me to call you?",
+                  style: TextStyle(fontSize: 17.5, fontWeight: FontWeight.w500)),
               const SizedBox(
                 height: 10,
               ),
@@ -63,15 +63,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       textEditingController.text.trim().isEmpty ? false : true;
                 },
                 style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 17,
                     decoration: TextDecoration.none,
                     decorationThickness: 0),
                 cursorColor: Colors.black,
                 controller: textEditingController,
                 keyboardType: TextInputType.text,
                 decoration: const InputDecoration.collapsed(
-                  hintText: 'Your name',
-                  hintStyle: TextStyle(color: AppColor.grayColor, fontSize: 20),
+                  hintText: 'Please Enter',
+                  hintStyle: TextStyle(color: AppColor.grayColor, fontSize: 17),
                   border: InputBorder.none,
                 ),
               )
