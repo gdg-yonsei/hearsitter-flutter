@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -93,7 +92,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
               ),
             ),
             // Text(stt.speechToText.lastRecognizedWords),
-            // Text(audioTaggingModel.label.toString()),
+            Text(audioTaggingModel.label.toString()),
             StreamBuilder(
               stream: audioTaggingApi,
               builder: (context, snapshot) {
@@ -178,7 +177,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
           bottomNavIcon(
               onTap: () {
                 _sendEmail();
-              }, icon: Icons.mail_rounded, text: 'Feedback'),
+              },
+              icon: Icons.mail_rounded,
+              text: 'Feedback'),
           const Padding(
             padding: EdgeInsets.only(left: 20),
             child: SizedBox(

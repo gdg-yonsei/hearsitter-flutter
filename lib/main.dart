@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hear_sitter/src/core/app_router.dart';
 import 'package:hear_sitter/src/core/app_theme.dart';
 import 'package:hear_sitter/src/core/utils/sharedprefs_util.dart';
+import 'package:hear_sitter/src/providers/test.dart';
 import 'package:hear_sitter/src/screens/home/home_screen.dart';
 
 import 'package:hear_sitter/src/screens/onboarding/onboarding_screen.dart';
@@ -12,8 +13,7 @@ late bool isOnboard;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesUtil.initialize();
-  // final prefs = SharedPreferencesUtil().prefs;
-  // isOnboard = prefs.getBool('isOnboard') ?? false;
+  await recorderStream.initialize();
   runApp(ProviderScope(child: const MyApp()));
 }
 
