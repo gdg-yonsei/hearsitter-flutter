@@ -53,7 +53,7 @@ Widget historyRow(List<AudioTaggingModel> history) {
                 '${historyDecibel}dB',
                 style: const TextStyle(
                     fontSize: 13,
-                    color: AppColor.darkColor,
+                    color: Colors.black87,
                     fontWeight: FontWeight.w300),
               ),
               const SizedBox(
@@ -63,7 +63,7 @@ Widget historyRow(List<AudioTaggingModel> history) {
                 historyDate,
                 style: const TextStyle(
                     fontSize: 13,
-                    color: AppColor.darkColor,
+                    color: Colors.black87,
                     fontWeight: FontWeight.w300),
               ),
             ],
