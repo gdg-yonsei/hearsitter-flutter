@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart'; // db에 접근하기 위해
 import 'package:hear_sitter/src/core/app_constants.dart';

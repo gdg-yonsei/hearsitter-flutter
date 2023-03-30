@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hear_sitter/src/core/app_assets.dart';
@@ -175,7 +176,9 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
             width: 20,
           ),
           bottomNavIcon(
-              onTap: () {}, icon: Icons.mail_rounded, text: 'Feedback'),
+              onTap: () {
+                _sendEmail();
+              }, icon: Icons.mail_rounded, text: 'Feedback'),
           const Padding(
             padding: EdgeInsets.only(left: 20),
             child: SizedBox(
@@ -214,6 +217,24 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _sendEmail() async {
+    final Email email = Email(
+        body: '',
+        subject: '[HearSitter Feedback]',
+        recipients: ['gdsc.yonsei.hearsitter@gmail.com'],
+        cc: [],
+        bcc: [],
+        attachmentPaths: [],
+        isHTML: false);
+
+    try {
+      await FlutterEmailSender.send(email);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sorry, an error occurred.')));
+    }
   }
 
   Widget bottomNavIcon(
