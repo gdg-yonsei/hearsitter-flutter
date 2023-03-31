@@ -1,7 +1,7 @@
 <br>
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/88659167/229131308-d658434a-cc34-46d0-a3da-4f2cb86272d0.png" width="170px" alt="HearSitter Logo" />
+<img src="https://user-images.githubusercontent.com/88659167/229131308-d658434a-cc34-46d0-a3da-4f2cb86272d0.png" width="100px" alt="HearSitter Logo" />
 </p>
 
 <h1 align="center">HearSitter</h1>
