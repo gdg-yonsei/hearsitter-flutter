@@ -80,7 +80,7 @@
 - [x] Show decibel scale information
 - [x] Show notifications on app when sound detected 
 - [X] Automatically save detection history in the history screen 
-- [] Delete detection history
+- [ ] Delete detection history
 
 ## Getting Started
 ### Requirements
