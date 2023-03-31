@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hear_sitter/src/core/app_assets.dart';
 import 'package:hear_sitter/src/core/app_constants.dart';
+import 'package:hear_sitter/src/core/core.dart';
 import 'package:hear_sitter/src/core/utils/router_util.dart';
 import 'package:hear_sitter/src/models/audio_tagging_model.dart';
 import 'package:hear_sitter/src/screens/home/widgets/history_row.dart';
@@ -27,7 +29,59 @@ class HomseScreen extends ConsumerStatefulWidget {
   ConsumerState<HomseScreen> createState() => _HomseScreenState();
 }
 
+final notifi = FlutterLocalNotificationsPlugin();
+
+initNotification() async {
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon');
+
+  var initializationSettingsDarwin = DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+  );
+
+  var initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsDarwin,
+  );
+
+  await notifi.initialize(initializationSettings);
+}
+
+Future<void> _showNotification(String? notiTitle, String? notiBody) async {
+  var androidNotificationDetails = AndroidNotificationDetails(
+      'HearSitter', 'Sound Detection',
+      channelDescription: 'Sound Detection Alarm',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: true);
+
+  var iosNotificationDetails = DarwinNotificationDetails(
+    badgeNumber: 1,
+  );
+
+  var notificationDetails = NotificationDetails(
+    android: androidNotificationDetails,
+    iOS: iosNotificationDetails,
+  );
+
+  await notifi.show(0, notiTitle, notiBody, notificationDetails,
+      payload: 'item x');
+}
+
+Future<void> showNotification(
+    {@required String? notiTitle, @required String? notiBody}) async {
+  debugPrint('울림');
+  await _showNotification(notiTitle, notiBody);
+}
+
 class _HomseScreenState extends ConsumerState<HomseScreen> {
+  @override
+  void initState() {
+    super.initState();
+    initNotification();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isRecording = ref.watch(isRecordingProvider);
@@ -38,6 +92,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
         ref.watch(audioTaggingApiProvider).audioTaggingModel;
     final decibelStream = ref.watch(decibelStreamProvider);
     List<AudioTaggingModel> history = ref.watch(audioTaggingDBProvider).history;
+
 
     // if (audioTaggingModel.isAlert) {
     //   ref.read(audioTaggingApiProvider.notifier).stopRecording();
@@ -124,10 +179,19 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
                   if (audioTaggingModel.isAlert &&
                       history.isNotEmpty &&
                       audioTaggingModel.label != history.last.label) {
+                    showNotification(
+                        notiTitle: '${audioTaggingModel.label} Detected!',
+                        notiBody:
+                        'HearSitter detected ${audioTaggingModel.label}');
+
                     ref
                         .read(audioTaggingDBProvider)
                         .addHistory(audioTaggingModel, currentDecibel);
                   } else if (audioTaggingModel.isAlert && history.isEmpty) {
+                    showNotification(
+                        notiTitle: '${audioTaggingModel.label} Detected!',
+                        notiBody:
+                            'HearSitter detected ${audioTaggingModel.label}');
                     ref
                         .read(audioTaggingDBProvider)
                         .addHistory(audioTaggingModel, currentDecibel);
