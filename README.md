@@ -84,9 +84,7 @@
 - [ ] Delete detection history
 
 ## Getting Started
-The HearSitter app is not yet released to Play Store / App Store. 
-
-For an app demo, you can [download a releaed apk file](https://drive.google.com/file/d/1ibGN9mNB-Y1cREDqv4Jab1on9llKtyH_/view?usp=share_link). To install this, you need to able downloading an app from unknown sources.
+ [Click to download a releaed apk](https://drive.google.com/file/d/1ibGN9mNB-Y1cREDqv4Jab1on9llKtyH_/view?usp=share_link). To install this, you need to able downloading an app from unknown sources.
 
 ### Requirements
 `Dart >= 2.18.0` & `Flutter >= 2.0.0`
