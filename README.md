@@ -80,7 +80,7 @@
 - [x] Show decibel scale information
 - [x] Show notifications on app when sound detected 
 - [X] Automatically save detection history in the history screen 
-- [X] Send 
+- [X] Send some feedback to the hearsitter team through email
 - [ ] Delete detection history
 
 ## Getting Started
