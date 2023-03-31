@@ -14,6 +14,7 @@ class HistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     List<AudioTaggingModel> history = ref.watch(audioTaggingDBProvider).history;
+    ref.watch(audioTaggingDBProvider).getAllHistory();
 
     // Let's render the todos in a scrollable list view
     return Scaffold(

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart'; // db에 접근하기 위해
 import 'package:hear_sitter/src/core/app_constants.dart';
@@ -65,6 +66,8 @@ class DatabaseUtil {
 
     db.insert(tableName, audioTagging.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+
+    debugPrint('데이터');
   }
 
   Future<void> deleteHistory(int id) async {

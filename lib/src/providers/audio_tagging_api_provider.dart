@@ -7,18 +7,6 @@ import 'package:hear_sitter/src/models/audio_tagging_model.dart';
 import 'package:hear_sitter/src/services/audio_tagging_service.dart';
 import 'package:sound_stream/sound_stream.dart';
 
-// final RecorderStream recorderStream = RecorderStream();
-// bool recorderEnable = false;
-//
-// Future<void> openRecord() async {
-//   recorderStream.status.listen((status) async {
-//     recorderEnable = status == SoundStreamStatus.Playing;
-//     debugPrint(recorderEnable.toString() + '체크');
-//   });
-//
-//   await Future.wait([recorderStream.initialize()]);
-// }
-
 final audioTaggingApiProvider =
     ChangeNotifierProvider((ref) => AudioTaggingApiNotifier(RecorderStream()));
 

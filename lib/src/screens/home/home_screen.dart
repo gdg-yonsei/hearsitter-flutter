@@ -147,7 +147,7 @@ class _HomseScreenState extends ConsumerState<HomseScreen> {
               ),
             ),
             // Text(stt.speechToText.lastRecognizedWords),
-            // Text(audioTaggingModel.label.toString()),
+            Text(audioTaggingModel.label.toString()),
             StreamBuilder(
               stream: audioTaggingApi,
               builder: (context, snapshot) {
