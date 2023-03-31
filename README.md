@@ -1,18 +1,23 @@
+<br>
+
 <p align="center">
-<img src="https://user-images.githubusercontent.com/88659167/229131308-d658434a-cc34-46d0-a3da-4f2cb86272d0.png" width="100px" alt="HearSitter Logo" />
+<img src="https://user-images.githubusercontent.com/88659167/229131308-d658434a-cc34-46d0-a3da-4f2cb86272d0.png" width="170px" alt="HearSitter Logo" />
 </p>
 
 <h1 align="center">HearSitter</h1>
 
-## Screens
+<br>
+
+## 📱 Screens
 
 
 |Preview                    |   Home screen             |   History Screen           |  Decibel Scale Screen    |
 |:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 <img src="https://user-images.githubusercontent.com/88659167/229133364-a701ac23-aea2-409a-9da2-9779c75bbaf2.gif" width='95%'>|<img src="https://user-images.githubusercontent.com/88659167/229136140-da524ef0-1077-4825-bdfd-f0a708de4377.jpg">|<img src="https://user-images.githubusercontent.com/88659167/229135997-da398cfa-0041-447e-b955-cff420323fb6.jpg" width='95%'>|<img src="https://user-images.githubusercontent.com/88659167/229136318-85a5a405-0f1f-41f0-807e-f24a1e4014a3.jpg" width='95%'>
 
+## 👀 MVVM Architecture with Riverpod
 
-## Dircectory Structure
+## 📂 Dircectory Structure
 
 ```
 📂lib
@@ -67,3 +72,16 @@
       └─ audio_tagging_service.dart
 
 ```
+## 🔎 Features
+
+- [x] State management with Riverpod
+- [X] Real-time Audio Stream
+- [X] Show decibel line chart and measure decibel with your phone
+- [x] Show decibel scale information
+- [x] Show notifications on app when sound detected 
+- [X] Automatically save detection history in the history screen 
+- [] Delete detection history
+
+## Getting Started
+### Requirements
+`Dart >= 2.18.0` & `Flutter >= 2.0.0`
