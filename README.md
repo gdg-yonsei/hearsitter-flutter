@@ -84,7 +84,7 @@
 - [X] Send some feedback to the hearsitter team through email
 - [ ] Delete detection history
 
-## Getting Started
+## 🚀 Getting Started
  [Click to download a releaed apk](https://drive.google.com/file/d/1ibGN9mNB-Y1cREDqv4Jab1on9llKtyH_/view?usp=share_link). To install this, you need to able downloading an app from unknown sources.
 
 ### Requirements
