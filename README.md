@@ -16,6 +16,7 @@
 <img src="https://user-images.githubusercontent.com/88659167/229133364-a701ac23-aea2-409a-9da2-9779c75bbaf2.gif" width='95%'>|<img src="https://user-images.githubusercontent.com/88659167/229136140-da524ef0-1077-4825-bdfd-f0a708de4377.jpg">|<img src="https://user-images.githubusercontent.com/88659167/229135997-da398cfa-0041-447e-b955-cff420323fb6.jpg" width='95%'>|<img src="https://user-images.githubusercontent.com/88659167/229136318-85a5a405-0f1f-41f0-807e-f24a1e4014a3.jpg" width='95%'>
 
 ## 👀 MVVM Architecture with Riverpod
+<img width="700" alt="hearsitter_architecture" src="https://user-images.githubusercontent.com/88659167/229158615-872c683c-ba14-4f10-8a39-f367b055ca7b.png">
 
 ## 📂 Dircectory Structure
 
